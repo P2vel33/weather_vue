@@ -1,13 +1,25 @@
 <script setup>
+import { ref } from "vue";
 import WeatherWidgets from "./components/WeatherWidgets.vue";
+const isVisiable = ref(false);
 </script>
 
 <template>
-  <div class="wheather">
+  <!-- <div class="wheather">
     <WeatherWidgets />
     <WeatherWidgets />
     <WeatherWidgets />
     <WeatherWidgets />
+  </div> -->
+  <div class="home">
+    <!-- <img src="/public/BackgroundHome.svg" alt="" :width="'1920px'" /> -->
+    <div class="wheather" v-if="isVisiable">
+      <WeatherWidgets />
+      <WeatherWidgets />
+      <WeatherWidgets />
+      <WeatherWidgets />
+    </div>
+    <div class="home-content" v-else></div>
   </div>
 
   <!-- <div class="div">
@@ -26,6 +38,38 @@ import WeatherWidgets from "./components/WeatherWidgets.vue";
 <style>
 * {
   margin: 0%;
+  /* background-image: url("/public/BackgroundHome.svg"); */
+  /* background-repeat: no-repeat; */
+  /* width: 390px; */
+  /* height: 844px; */
+  /* width: 100%; */
+  /* height: 100vh; */
+}
+
+.home {
+  /* width: 390px; */
+  /* height: 844px; */
+  padding: 10%;
+  /* border-radius: 44px; */
+  box-shadow: 40px 60px 150px 0px rgba(59, 38, 123, 0.7);
+
+  background: linear-gradient(
+    136.55deg,
+    rgb(46, 51, 90) 1.538%,
+    rgb(28, 27, 51) 95.915%
+  );
+  padding: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* width: 100%; */
+  /* height: 100vh; */
+  /* background-image: url("/public/BackgroundHome.svg"); */
+  /* background-color: aqua; */
+  /* background-image: url("/public/Back.jpg"); */
+  /* background-size: 100% 100%; */
 }
 .wheather {
   height: 100%;
@@ -36,6 +80,7 @@ import WeatherWidgets from "./components/WeatherWidgets.vue";
   gap: 30px;
   border-radius: 44px;
   box-shadow: 40px 60px 150px 0px rgba(59, 38, 123, 0.7);
+
   background: linear-gradient(
     136.55deg,
     rgb(46, 51, 90) 1.538%,
@@ -43,71 +88,11 @@ import WeatherWidgets from "./components/WeatherWidgets.vue";
   );
   padding: 10%;
 }
-/* .div {
-  position: relative;
-  width: 342px;
-  height: 184px;
-  left: 20px;
-}
-.rectangle {
-  position: absolute;
-  background-image: url("/public/Subtract.svg");
-  width: 339px;
-  height: 167px;
+
+.home-content {
+  background-image: url("/public/House.svg");
+  width: 500px;
+  height: 500px;
   background-repeat: no-repeat;
-  top: 11px;
-  bottom: 1px;
 }
-.label1 {
-  position: absolute;
-  left: 20px;
-  top: 48px;
-  color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
-  font-size: 64px;
-  font-weight: 400;
-  line-height: 41px;
-  letter-spacing: 0.37px;
-  text-align: left;
-}
-.label2 {
-  position: absolute;
-
-  width: 136px;
-  height: 41px;
-  left: 20px;
-  top: 113px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  margin: 0;
-}
-.label3 {
-  position: absolute;
-  width: 81px;
-  height: 18px;
-  left: 237px;
-  top: 136px;
-  color: rgb(255, 255, 255);
-  font-family: SF Pro Text;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 18px;
-  letter-spacing: -0.08px;
-}
-.label21 {
-  color: rgba(235, 235, 245, 0.6);
-}
-
-.label22 {
-  color: white;
-}
-.image {
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  left: 175px;
-  top: -30px;
-  background: url("/public/MoonCloudFastWind.svg");
-} */
 </style>

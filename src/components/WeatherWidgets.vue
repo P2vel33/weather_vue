@@ -1,7 +1,7 @@
 <script setup>
 const width = window.innerWidth;
 const height = window.innerHeight;
-// console.log(height);
+console.log(height, width);
 </script>
 
 <template>

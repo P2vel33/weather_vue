@@ -28,6 +28,7 @@ import WeatherWidgets from "./components/WeatherWidgets.vue";
   margin: 0%;
 }
 .wheather {
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;

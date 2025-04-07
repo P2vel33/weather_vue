@@ -1,6 +1,7 @@
 <script setup>
 const width = window.innerWidth;
 const height = window.innerHeight;
+// console.log(height);
 </script>
 
 <template>
@@ -22,7 +23,7 @@ const height = window.innerHeight;
 .div {
   position: relative;
   width: 100%;
-  height: 800px;
+  height: 83vh;
   left: 20px;
   align-items: center;
 }
@@ -32,7 +33,7 @@ const height = window.innerHeight;
   /* background-position: 90%; */
   background-size: 99% 90%;
   width: 99.1%;
-  height: 700px;
+  height: 72.6vh;
   background-repeat: no-repeat;
   top: 11px;
   bottom: 1px;

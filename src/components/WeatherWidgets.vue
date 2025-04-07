@@ -1,22 +1,43 @@
 <script setup>
-const width = window.innerWidth;
-const height = window.innerHeight;
-console.log(height, width);
+const { weather, cityAndCountry, iconId } = defineProps({
+  weather: {
+    type: Object,
+    required: true,
+  },
+  cityAndCountry: {
+    type: Object,
+    required: true,
+  },
+  iconId: {
+    type: Number,
+    required: true,
+  },
+});
+// console.log();
+// const width = window.innerWidth;
+// const height = window.innerHeight;
+// console.log(height, width);
 </script>
 
 <template>
   <div class="content">
-    <p class="city">Montreal:</p>
+    <p class="city">{{ cityAndCountry.city }}:</p>
     <div class="div">
       <div class="rectangle">
         <!-- <img src="/public/Subtract.svg" class="rectangle" /> -->
-        <p class="label1">19°</p>
+        <p class="label1">{{ Number(weather.temp - 273.15).toFixed() }}°</p>
         <div class="image"></div>
         <div class="label2">
-          <p class="label21">H:24° L:18°</p>
-          <p class="label22">Montreal, Canada</p>
+          <p class="label21">
+            H:{{ Number(weather.temp_max - 273.15).toFixed() }}° L:{{
+              Number(weather.temp_min - 273.15).toFixed()
+            }}°
+          </p>
+          <p class="label22">
+            {{ cityAndCountry.city }}, {{ cityAndCountry.country }}
+          </p>
         </div>
-        <p class="label3">Partly Cloudy</p>
+        <p class="label3">Partly Cloudy, {{ iconId }}</p>
       </div>
     </div>
   </div>

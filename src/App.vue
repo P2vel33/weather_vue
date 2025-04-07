@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from "vue";
 import WeatherWidgets from "./components/WeatherWidgets.vue";
-const isVisiable = ref(false);
+import WeatherCity from "./components/WeatherCity.vue";
+const isVisiable = ref(true);
 </script>
 
 <template>
@@ -14,10 +15,11 @@ const isVisiable = ref(false);
   <div class="home">
     <!-- <img src="/public/BackgroundHome.svg" alt="" :width="'1920px'" /> -->
     <div class="wheather" v-if="isVisiable">
+      <!-- <WeatherWidgets />
       <WeatherWidgets />
       <WeatherWidgets />
-      <WeatherWidgets />
-      <WeatherWidgets />
+      <WeatherWidgets /> -->
+      <WeatherCity />
     </div>
     <div class="home-content" v-else></div>
   </div>

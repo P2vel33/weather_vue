@@ -34,47 +34,47 @@ const { weather, iconId } = getWeatherCity();
         </p>
       </div>
     </div>
-    <div class="div-hour-or-week">
-      <button class="hour-or-week">Hourly Forecast</button>
-      <button class="hour-or-week">Weekly Forecast</button>
-    </div>
-    <div class="time-weather">
-      <div
-        v-for="(item, index) of dataNewWeather.list.filter(
-          (el, index) => index < 4
-        )"
-        :key="index"
-      >
-        <WeatherHoursOrDays :data="item" />
+    <div class="homes"></div>
+    <div class="rectangleHome">
+      <div class="div-hour-or-week">
+        <button class="hour-or-week">Hourly Forecast</button>
+        <button class="hour-or-week">Weekly Forecast</button>
+      </div>
+      <div class="weather-hours-scroll">
+        <WeatherHoursOrDays
+          v-for="(item, index) of dataNewWeather.list.filter(
+            (el, index) => index < 10
+          )"
+          :key="index"
+          :data="item"
+        />
       </div>
     </div>
 
-    <div class="homes"></div>
-    <div class="rectangleHome"></div>
     <div class="ellipseRight"></div>
   </div>
 </template>
 
 <style scoped>
-/* img {
-  border-end-end-radius: 50%;
-  border-end-start-radius: 50%;
-  border-start-start-radius: 40%;
-} */
-.time-weather {
-  padding-top: 15%;
+.weather-hours-scroll {
+  /* margin-top: -70%; */
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  gap: 30px;
+  /* align-items: center; */
+  /* justify-content: center; */
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  z-index: 100;
 }
 
 .div-hour-or-week {
+  /* margin-top: -80%; */
+  width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 50px;
-  justify-content: center;
-  padding-top: 360px;
+  /* gap: 50px; */
+  justify-content: space-around;
   border-radius: 25px;
 }
 .hour-or-week {
@@ -89,7 +89,7 @@ const { weather, iconId } = getWeatherCity();
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 1;
+  z-index: 3;
   transition: all 0.5s linear;
   /* border-bottom: 3px solid white; */
 }
@@ -105,9 +105,6 @@ const { weather, iconId } = getWeatherCity();
 }
 
 .city-name {
-  /* position: absolute; */
-  /* left: 130px; */
-  /* top: 98px; */
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;
   font-size: 34px;
@@ -122,23 +119,13 @@ const { weather, iconId } = getWeatherCity();
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 30px;
   padding-top: 50px;
 }
 
-p {
-  text-align: center;
-  align-items: center;
-  justify-items: center;
-}
-
 .temp {
-  /* 19° */
-  /* position: absolute; */
   width: 127px;
   height: 70px;
-  /* left: 132px; */
-  /* top: 151px; */
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;
   font-size: 96px;
@@ -149,12 +136,8 @@ p {
 }
 
 .label2 {
-  /* Label */
-  /* position: absolute; */
   width: 115px;
   height: 48px;
-  /* left: 138px; */
-  /* top: 233px; */
   font-family: SF Pro Display;
   font-size: 20px;
   font-weight: 600;
@@ -171,7 +154,6 @@ p {
   color: rgba(235, 235, 245, 0.6);
   height: 100%;
   vertical-align: text-top;
-  /* font-size: 2.71vw; */
   font-size: 13px;
   text-align: center;
 }
@@ -179,54 +161,44 @@ p {
 .label22 {
   color: white;
   height: 100%;
-  /* font-size: 3.55vw; */
   font-size: 17px;
 }
 
 .back {
-  position: relative;
   align-items: center;
   text-align: center;
   justify-content: center;
-  /* background-image: url("/public/BackgroundHome.svg"); */
-  /* background-size: cover; */
-  /* background-repeat: no-repeat; */
   width: 390px;
   height: 844px;
   border-radius: 50px;
 }
 .homes {
-  position: absolute;
-  /* left: 74px; */
-  top: 320px;
   width: 392px;
   height: 390px;
   background-image: url("/public/House.svg");
-  /* background: none; */
   background-repeat: no-repeat;
 }
 .rectangleHome {
-  position: absolute;
-  /* left: 74px; */
-  top: 575px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* align-items: center; */
+  gap: 50px;
+  margin-top: -50%;
   height: 325px;
   width: 392px;
   background-repeat: no-repeat;
   background-image: url("/public/RectangleHome.svg");
   background-color: rgba(46, 51, 90, 0.9);
   border-radius: 50px;
-  /* z-index: 1; */
+  z-index: 2;
 }
 .ellipseRight {
-  position: absolute;
-  left: 271px;
-  top: 620px;
   height: 250px;
   width: 250px;
   background-repeat: no-repeat;
   background-image: url("/public/EllipseRight.svg");
   border-radius: 50%;
-  /* z-index: 2; */
   border-right: 50px transparent;
   filter: blur(140px);
   background: conic-gradient(
@@ -238,18 +210,12 @@ p {
   );
 }
 .ellipseTop {
-  position: absolute;
-  left: 50px;
-  top: 520px;
   height: 325px;
   width: 390px;
   background-repeat: no-repeat;
   background-image: url("/public/EllipseTop.svg");
 }
 .ellipseTopSmall {
-  position: absolute;
-  left: 50px;
-  top: 520px;
   height: 325px;
   width: 390px;
   background-repeat: no-repeat;

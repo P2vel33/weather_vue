@@ -2,57 +2,35 @@
 import { ref } from "vue";
 import WeatherWidgets from "./components/WeatherWidgets.vue";
 import WeatherCity from "./components/WeatherCity.vue";
-const isVisiable = ref(true);
+import dataNewWeather from "./data/dataNewWeather";
+import WeatherHoursOrDays from "./components/WeatherHoursOrDays.vue";
+const isVisiable = ref(false);
 </script>
 
 <template>
-  <!-- <div class="wheather">
-    <WeatherWidgets />
-    <WeatherWidgets />
-    <WeatherWidgets />
-    <WeatherWidgets />
-  </div> -->
   <div class="home">
-    <!-- <img src="/public/BackgroundHome.svg" alt="" :width="'1920px'" /> -->
-    <div class="wheather" v-if="isVisiable">
-      <!-- <WeatherWidgets />
-      <WeatherWidgets />
-      <WeatherWidgets />
-      <WeatherWidgets /> -->
+    <div class="left-panel">
       <WeatherCity />
     </div>
+    <div class="wheather" v-if="isVisiable"></div>
     <div class="home-content" v-else></div>
   </div>
-
-  <!-- <div class="div">
-    <div class="rectangle">
-      <p class="label1">19°</p>
-      <div class="image"></div>
-      <div class="label2">
-        <p class="label21">H:24° L:18°</p>
-        <p class="label22">Montreal, Canada</p>
-      </div>
-      <p class="label3">Partly Cloudy</p>
-    </div>
-  </div> -->
 </template>
 
 <style>
 * {
   margin: 0%;
-  /* background-image: url("/public/BackgroundHome.svg"); */
-  /* background-repeat: no-repeat; */
-  /* width: 390px; */
-  /* height: 844px; */
-  /* width: 100%; */
-  /* height: 100vh; */
+}
+
+.div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 50px;
 }
 
 .home {
-  /* width: 390px; */
-  /* height: 844px; */
   padding: 10%;
-  /* border-radius: 44px; */
   box-shadow: 40px 60px 150px 0px rgba(59, 38, 123, 0.7);
 
   background: linear-gradient(
@@ -65,13 +43,6 @@ const isVisiable = ref(true);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  /* width: 100%; */
-  /* height: 100vh; */
-  /* background-image: url("/public/BackgroundHome.svg"); */
-  /* background-color: aqua; */
-  /* background-image: url("/public/Back.jpg"); */
-  /* background-size: 100% 100%; */
 }
 .wheather {
   height: 100%;
@@ -89,12 +60,5 @@ const isVisiable = ref(true);
     rgb(28, 27, 51) 95.915%
   );
   padding: 10%;
-}
-
-.home-content {
-  background-image: url("/public/House.svg");
-  width: 500px;
-  height: 500px;
-  background-repeat: no-repeat;
 }
 </style>

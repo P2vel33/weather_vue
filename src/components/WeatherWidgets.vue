@@ -34,7 +34,8 @@ const { weather, cityAndCountry, iconId } = defineProps({
             }}°
           </p>
           <p class="label22">
-            {{ cityAndCountry.city }}, {{ cityAndCountry.country }}
+            {{ cityAndCountry.city }},{{ cityAndCountry.state }},
+            {{ cityAndCountry.country }}
           </p>
         </div>
         <p class="label3">Partly Cloudy, {{ iconId }}</p>

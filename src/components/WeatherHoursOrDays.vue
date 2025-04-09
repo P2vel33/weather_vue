@@ -1,5 +1,5 @@
 <script setup>
-import { watch } from "vue";
+import { ref, watch } from "vue";
 import { useVisiableDaysOrHoursWeather } from "../store/VisiableDaysOrHoursWeather";
 
 const { data, visiableDaysWeather, visiableHoursWeather } = defineProps({
@@ -23,7 +23,10 @@ const time = data.dt_txt.slice(-8, -3);
 const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
 const days = arrayDaysOfWeek[new Date(data.dt_txt).getDay()];
 const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-
+const classActive = ref(false);
+const active = () => {
+  classActive.value = !classActive.value;
+};
 // console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
 // watch(
 //   () => visiableDaysWeather,
@@ -34,7 +37,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2
 </script>
 
 <template>
-  <div class="hour-or-day">
+  <div class="hour-or-day" :class="classActive ? 'active' : ''" @click="active">
     <p class="time" v-if="visiableDaysWeather">{{ days }}</p>
     <p class="time" v-else-if="visiableHoursWeather">{{ time }}</p>
     <div class="image-weather-and-humidity">
@@ -97,6 +100,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2
 }
 
 .hour-or-day {
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,5 +115,16 @@ const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2
   box-shadow: 5px 4px 10px 0px rgba(0, 0, 0, 0.25),
     inset 1px 1px 0px 0px rgba(255, 255, 255, 0.25);
   background: rgba(72, 49, 157, 0.2);
+  transition: background 1s ease;
+}
+
+.hour-or-day:hover {
+  background-color: rgb(72, 49, 157);
+  transition: background-color 1s ease;
+}
+
+.active {
+  background-color: rgb(72, 49, 157);
+  transition: background-color 1s ease;
 }
 </style>

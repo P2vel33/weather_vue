@@ -5,36 +5,70 @@ const data = dNW.list[0];
 const sunrise = new Date(dNW.city.sunrise * 1000);
 const sunset = new Date(dNW.city.sunset * 1000);
 const feels_like = Number(data.main.feels_like - 271.15).toFixed();
+const arrayWindDirection = ["N", "N/E", "E", "S/E", "S", "S/W", "W", "N/W"];
+data.wind.deg = 350;
+const windDirection =
+  data.wind.deg >= 337.5 || data.wind.deg <= 22.5
+    ? arrayWindDirection[0]
+    : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
 </script>
 
 <template>
   <div class="right-panel">
-    <div class="weather-element one">Cloudy: {{ data.clouds.all }}%</div>
+    <div class="weather-element one">
+      <p>Cloudy</p>
+      <img class="firstElement" src="/public/RightPanel/cloudy.svg" alt="" />
+      <p>{{ data.clouds.all }} %</p>
+    </div>
     <!-- <div class="weather-element">2</div> -->
     <div class="weather-element">
-      Speed wind:{{ data.wind.gust }}, deg wind:{{ data.wind.deg }}°
-    </div>
-    <div class="weather-element">Visiable: {{ data.visibility }}, metrs</div>
-    <div class="weather-element">Вероятность осадков: {{ data.pop }}%</div>
-    <div class="weather-element">
-      Объём осадков за 3 часа: {{ data.rain["3h"] }},мм
+      <p>Speed wind</p>
+      <img class="element" src="/public/RightPanel/wind.svg" alt="" />
+      <p>{{ data.wind.gust }}, m/s {{ windDirection }}</p>
     </div>
     <div class="weather-element">
-      <img class="sss" src="/public/RightPanel/sunrise2.svg" alt="" />
-      Восход: {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
+      <p>Visiable</p>
+      <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
+      <p>{{ data.visibility }}, metrs</p>
     </div>
     <div class="weather-element">
-      Закат: {{ `${sunset.getHours()}:${sunset.getMinutes()}` }}
+      <p>Probability of precipitation</p>
+      <img class="element" src="/public/RightPanel/rain.svg" alt="" />
+      <p>{{ data.pop }} %</p>
     </div>
-    <div class="weather-element">Feels like: {{ feels_like }}°C</div>
+    <div class="weather-element">
+      <p>Precipitation volume for 3 hours</p>
+      <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
+      <p>{{ data.rain["3h"] }}, mm</p>
+    </div>
+    <div class="weather-element">
+      <p>Sunrise</p>
+      <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
+      <p>{{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}</p>
+    </div>
+    <div class="weather-element">
+      <p>Sunset</p>
+      <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
+      <p>{{ `${sunset.getHours()}:${sunset.getMinutes()}` }}</p>
+    </div>
+    <div class="weather-element">
+      <p>Feels like</p>
+      <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
+      <p>{{ feels_like }}, °C</p>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.sss {
-  width: 100px;
-  height: 100px;
-  background-color: azure;
+.firstElement {
+  width: 80%;
+  height: 80%;
+}
+
+.element {
+  width: 50%;
+  height: 50%;
+  /* background-color: azure; */
 }
 
 .right-panel {
@@ -69,6 +103,11 @@ const feels_like = Number(data.main.feels_like - 271.15).toFixed();
   );
   transition: background 1s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
 }
 
 .weather-element:hover {

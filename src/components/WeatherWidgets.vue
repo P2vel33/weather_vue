@@ -1,44 +1,42 @@
 <script setup>
-const { weather, cityAndCountry, iconId } = defineProps({
-  weather: {
+const { dataWeather, dataCity } = defineProps({
+  dataWeather: {
     type: Object,
     required: true,
   },
-  cityAndCountry: {
+  dataCity: {
     type: Object,
-    required: true,
-  },
-  iconId: {
-    type: Number,
     required: true,
   },
 });
-// console.log();
-// const width = window.innerWidth;
-// const height = window.innerHeight;
-// console.log(height, width);
+
+const city = dataCity[0].name;
+const country = dataCity[0].country;
+const state = dataCity[0].state;
+const temp = Number(dataWeather.main.temp - 273.15).toFixed();
+const temp_max = Number(dataWeather.main.temp_max - 273.15).toFixed();
+const temp_min = Number(dataWeather.main.temp_min - 273.15).toFixed();
+const iconId = dataWeather.weather[0].id;
+const weatherDescription = dataWeather.weather[0].description;
+const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].icon}@2x.png`;
+console.log(city);
 </script>
 
 <template>
   <div class="content">
-    <p class="city">{{ cityAndCountry.city }}:</p>
+    <!-- <p class="city">{{ city }}:</p> -->
     <div class="div">
       <div class="rectangle">
         <!-- <img src="/public/Subtract.svg" class="rectangle" /> -->
-        <p class="label1">{{ Number(weather.temp - 273.15).toFixed() }}°</p>
-        <div class="image"></div>
+        <p class="label1">{{ temp }}°</p>
+        <img class="image" :src="iconWeather" />
         <div class="label2">
-          <p class="label21">
-            H:{{ Number(weather.temp_max - 273.15).toFixed() }}° L:{{
-              Number(weather.temp_min - 273.15).toFixed()
-            }}°
-          </p>
+          <p class="label21">H:{{ temp_max }}° L:{{ temp_min }}°</p>
           <p class="label22">
-            {{ cityAndCountry.city }},{{ cityAndCountry.state }},
-            {{ cityAndCountry.country }}
+            {{ city }}, {{ state === city ? "" : `${state}, ` }}{{ country }}
           </p>
         </div>
-        <p class="label3">Partly Cloudy, {{ iconId }}</p>
+        <p class="label3">{{ weatherDescription }} {{ iconId }}</p>
       </div>
     </div>
   </div>
@@ -160,7 +158,7 @@ const { weather, cityAndCountry, iconId } = defineProps({
   height: 160px;
   left: 175px;
   top: -30px;
-  background-image: url("/public/MoonCloudFastWind.svg");
+  /* background-image: url("/public/MoonCloudFastWind.svg"); */
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }

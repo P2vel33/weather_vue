@@ -12,7 +12,7 @@ export default function getCoordinateCity(city) {
       //   `http://api.openweathermap.org/geo/1.0/direct?q=${city.value}&limit=5&appid=${api_key}`
       // );
       // const response = await res.json();
-      const response = dataCity;
+      const response = dataCity[0];
       lat.value = response[0].lat;
       lon.value = response[0].lon;
       cityAndCountry.value = {

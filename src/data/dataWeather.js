@@ -1,4 +1,4 @@
-const dataWeather = {
+const dataWeatherKazan = {
   coord: { lon: 49.1242, lat: 55.7824 },
   weather: [
     { id: 804, main: "Clouds", description: "overcast clouds", icon: "04d" },
@@ -27,8 +27,110 @@ const dataWeather = {
   },
   timezone: 10800,
   id: 551487,
-  name: "Kazan’",
+  name: "Kazan",
   cod: 200,
 };
 
-export default dataWeather;
+const dataWeatherMoscow = {
+  coord: { lon: 37.6175, lat: 55.7504 },
+  weather: [
+    { id: 804, main: "Clouds", description: "overcast clouds", icon: "04d" },
+  ],
+  base: "stations",
+  main: {
+    temp: 275.66,
+    feels_like: 271.13,
+    temp_min: 273.44,
+    temp_max: 275.79,
+    pressure: 1004,
+    humidity: 56,
+    sea_level: 1004,
+    grnd_level: 985,
+  },
+  visibility: 4639,
+  wind: { speed: 5.47, deg: 258, gust: 9.42 },
+  clouds: { all: 100 },
+  dt: 1744201656,
+  sys: {
+    type: 2,
+    id: 2094500,
+    country: "RU",
+    sunrise: 1744166374,
+    sunset: 1744215733,
+  },
+  timezone: 10800,
+  id: 524901,
+  name: "Moscow",
+  cod: 200,
+};
+const dataWeatherKrasnodar = {
+  coord: { lon: 38.9765, lat: 45.0353 },
+  weather: [
+    { id: 804, main: "Clouds", description: "overcast clouds", icon: "10d" },
+  ],
+  base: "stations",
+  main: {
+    temp: 279.25,
+    feels_like: 276.36,
+    temp_min: 278.16,
+    temp_max: 279.25,
+    pressure: 1014,
+    humidity: 82,
+    sea_level: 1014,
+    grnd_level: 1012,
+  },
+  visibility: 10000,
+  wind: { speed: 4, deg: 70 },
+  clouds: { all: 100 },
+  dt: 1744202357,
+  sys: {
+    type: 2,
+    id: 2012251,
+    country: "RU",
+    sunrise: 1744166997,
+    sunset: 1744214459,
+  },
+  timezone: 10800,
+  id: 542420,
+  name: "Krasnodar",
+  cod: 200,
+};
+const dataWeatherSaintPeterburg = {
+  coord: { lon: 30.3162, lat: 59.9387 },
+  weather: [
+    { id: 804, main: "Clouds", description: "overcast clouds", icon: "04d" },
+  ],
+  base: "stations",
+  main: {
+    temp: 274.82,
+    feels_like: 269.38,
+    temp_min: 274.82,
+    temp_max: 275.19,
+    pressure: 998,
+    humidity: 87,
+    sea_level: 998,
+    grnd_level: 995,
+  },
+  visibility: 10000,
+  wind: { speed: 7, deg: 320 },
+  clouds: { all: 100 },
+  dt: 1744202437,
+  sys: {
+    type: 2,
+    id: 2046422,
+    country: "RU",
+    sunrise: 1744167587,
+    sunset: 1744218024,
+  },
+  timezone: 10800,
+  id: 519690,
+  name: "Novaya Gollandiya",
+  cod: 200,
+};
+
+export default [
+  dataWeatherKazan,
+  dataWeatherKrasnodar,
+  dataWeatherMoscow,
+  dataWeatherSaintPeterburg,
+];

@@ -7,9 +7,10 @@ import dataNewWeather from "../data/dataNewWeather";
 import WeatherHoursOrDays from "./WeatherHoursOrDays.vue";
 import { useVisiableDaysOrHoursWeather } from "../store/VisiableDaysOrHoursWeather";
 
-const city = ref("орел");
+// const city = ref("орел");
 const { cityAndCountry } = getCoordinateCity();
 const { weather, iconId, weatherDescription } = getWeatherCity();
+// console.log(cityAndCountry.value.city);
 // const { isVisiableDaysWeather, isVisiableHoursWeather } =
 // useVisiableDaysOrHoursWeather();
 const visiableDaysWeather = ref(false);
@@ -28,7 +29,15 @@ const isVisiableHoursWeather = () => {
 
 const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
 
-console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
+// console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
+// console.log(weather.value);
+// console.log(weather);
+// console.log(weather.value.temp);
+// const city = cityAndCountry.value.city;
+// const temp = Number(weather.value.temp - 271.15).toFixed();
+// console.log(temp);
+// const temp_max = Number(weather.value.temp_max - 273.15).toFixed();
+// const temp_min = Number(weather.value.temp_min - 273.15).toFixed();
 </script>
 
 <template>
@@ -71,20 +80,20 @@ console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
         <div class="weather-hours-scroll">
           <WeatherHoursOrDays
             v-if="visiableHoursWeather"
-            v-for="(item, index) of dataNewWeather.list.filter(
+            v-for="(item, index) of dataNewWeather[0].list.filter(
               (el, index) => index < 9
             )"
-            :key="dataNewWeather.list.dt"
+            :key="dataNewWeather[0].list.dt"
             :data="item"
             :visiableDaysWeather
             :visiableHoursWeather
           />
           <WeatherHoursOrDays
             v-if="visiableDaysWeather"
-            v-for="(item, index) of dataNewWeather.list.filter(
+            v-for="(item, index) of dataNewWeather[0].list.filter(
               (el, index) => index % 8 === 0
             )"
-            :key="dataNewWeather.list.dt"
+            :key="dataNewWeather[0].list.dt"
             :data="item"
             :visiableDaysWeather
             :visiableHoursWeather

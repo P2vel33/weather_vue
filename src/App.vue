@@ -5,6 +5,7 @@ import WeatherCity from "./components/WeatherCity.vue";
 import dataNewWeather from "./data/dataNewWeather";
 import WeatherHoursOrDays from "./components/WeatherHoursOrDays.vue";
 import RightPanel from "./components/RightPanel.vue";
+import WidgetList from "./components/WidgetList.vue";
 const isVisiable = ref(false);
 </script>
 
@@ -13,6 +14,11 @@ const isVisiable = ref(false);
     <div class="left-panel">
       <WeatherCity />
     </div>
+    <div class="widget-list-and-header">
+      <h2 class="header-widget-list">Others cities</h2>
+      <WidgetList />
+    </div>
+
     <RightPanel />
   </div>
 </template>
@@ -22,6 +28,22 @@ const isVisiable = ref(false);
   margin: 0%;
 }
 
+.widget-list-and-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.header-widget-list {
+  text-align: center;
+  color: white;
+  color: rgb(255, 255, 255);
+  font-family: SF Pro Display;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 41px;
+  letter-spacing: 0.37px;
+  text-align: center;
+}
 .home {
   /* box-shadow: 40px 60px 150px 0px rgba(59, 38, 123, 0.7);
   background: linear-gradient(

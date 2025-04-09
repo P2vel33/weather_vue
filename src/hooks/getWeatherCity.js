@@ -13,10 +13,11 @@ export default function getWeatherCity(city) {
       // `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`
       // );
       // const response = await res.json();
-      const response = dataWeather;
+      const response = dataWeather[0];
       weather.value = response.main;
       iconId.value = response.weather[0].id;
       weatherDescription.value = response.weather[0].description;
+      // console.log(weatherDescription.value);
     } catch (error) {
       console.log(error);
     }

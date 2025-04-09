@@ -17,19 +17,19 @@ const windDirection =
   <div class="right-panel">
     <div class="weather-element one">
       <p>Cloudy</p>
-      <img class="firstElement" src="/public/RightPanel/cloudy.svg" alt="" />
+      <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
       <p>{{ data.clouds.all }} %</p>
     </div>
     <!-- <div class="weather-element">2</div> -->
     <div class="weather-element">
       <p>Speed wind</p>
       <img class="element" src="/public/RightPanel/wind.svg" alt="" />
-      <p>{{ data.wind.gust }}, m/s {{ windDirection }}</p>
+      <p>{{ data.wind.gust }} m/s {{ windDirection }}</p>
     </div>
     <div class="weather-element">
       <p>Visiable</p>
       <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
-      <p>{{ data.visibility }}, metrs</p>
+      <p>{{ data.visibility }} metrs</p>
     </div>
     <div class="weather-element">
       <p>Probability of precipitation</p>
@@ -39,7 +39,7 @@ const windDirection =
     <div class="weather-element">
       <p>Precipitation volume for 3 hours</p>
       <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
-      <p>{{ data.rain["3h"] }}, mm</p>
+      <p>{{ data.rain["3h"] }} mm</p>
     </div>
     <div class="weather-element">
       <p>Sunrise</p>
@@ -54,12 +54,22 @@ const windDirection =
     <div class="weather-element">
       <p>Feels like</p>
       <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
-      <p>{{ feels_like }}, °C</p>
+      <p>{{ feels_like }} °C</p>
     </div>
   </div>
 </template>
 
 <style scoped>
+p {
+  color: rgb(255, 255, 255);
+  font-family: SF Pro Display;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 41px;
+  letter-spacing: 0.37px;
+  text-align: center;
+}
+
 .firstElement {
   width: 80%;
   height: 80%;
@@ -102,7 +112,7 @@ const windDirection =
     rgba(46, 51, 90, 0.9) 100%
   );
   transition: background 1s ease;
-  cursor: pointer;
+  /* cursor: pointer; */
   display: flex;
   flex-direction: column;
   justify-content: center;

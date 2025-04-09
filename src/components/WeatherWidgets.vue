@@ -104,7 +104,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].
   height: 22.3%;
   left: 5.8%;
   top: 65%; */
-  width: 136px;
+  width: 160px;
   height: 41px;
   left: 20px;
   top: 113px;

@@ -22,9 +22,11 @@ const dW = dataWeather[0];
 
 <style scoped>
 .widget-list {
-  margin-top: 10%;
+  margin-top: 5%;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
+  /* Weather Color/Linear/1 */
+  /* Weather Color/Linear/1 */
 }
 </style>

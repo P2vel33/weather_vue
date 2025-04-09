@@ -16,6 +16,10 @@ const isVisiable = ref(false);
     </div>
     <div class="widget-list-and-header">
       <h2 class="header-widget-list">Others cities</h2>
+      <div class="search">
+        <img src="/public/searchIcon.svg" alt="" />
+        <input class="input-city" type="text" placeholder="Kazan" />
+      </div>
       <WidgetList />
     </div>
 
@@ -27,11 +31,45 @@ const isVisiable = ref(false);
 * {
   margin: 0%;
 }
+.input-city {
+  background: none;
+  border: none;
+  color: rgba(235, 235, 245, 0.6);
+  font-family: SF Pro Text;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.41px;
+  text-align: left;
+  width: 90%;
+}
+
+.input-city:focus {
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.search {
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px;
+
+  box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(
+    136.55deg,
+    rgba(46, 51, 90, 0.26) 2.552%,
+    rgba(28, 27, 51, 0.26) 93.363%
+  );
+  padding: 1%;
+}
 
 .widget-list-and-header {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  gap: 10px;
+  justify-content: center;
 }
 .header-widget-list {
   text-align: center;

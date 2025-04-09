@@ -23,27 +23,16 @@ const time = data.dt_txt.slice(-8, -3);
 const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
 const days = arrayDaysOfWeek[new Date(data.dt_txt).getDay()];
 const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-const classActive = ref(false);
-const active = () => {
-  classActive.value = !classActive.value;
-};
-// console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
-// watch(
-//   () => visiableDaysWeather,
-//   () => {
-//     console.log("visiableDaysWeather");
-//   }
-// );
 </script>
-
 <template>
-  <div class="hour-or-day" :class="classActive ? 'active' : ''" @click="active">
+  <div class="hour-or-day">
     <p class="time" v-if="visiableDaysWeather">{{ days }}</p>
     <p class="time" v-else-if="visiableHoursWeather">{{ time }}</p>
     <div class="image-weather-and-humidity">
       <img class="image" :src="iconWeather" />
-      <!-- src="/public/MoonCloudFastWindSmall.svg" -->
-      <p class="rain">{{ data.main.humidity }}%</p>
+      <p class="rain">
+        {{ data?.rain === undefined ? 0 : data?.rain["3h"].toFixed() }}%
+      </p>
     </div>
     <p class="temp">{{ temp }}°</p>
   </div>
@@ -51,10 +40,8 @@ const active = () => {
 
 <style scoped>
 .image {
-  /* Moon cloud mid rain (Big/Moon cloud mid rain) */
   width: 40px;
   height: 40px;
-  /* background-image: url("/public/MoonCloudMidRainSmall.svg"); */
 }
 
 .rain {

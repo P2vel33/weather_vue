@@ -7,12 +7,19 @@ import WeatherHoursOrDays from "./components/WeatherHoursOrDays.vue";
 import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
 const isVisiable = ref(false);
+const currentItemWeather = ref(dataNewWeather[0].list[0]);
+const changeCurrentItemWeather = (value) => {
+  currentItemWeather.value = value;
+};
 </script>
 
 <template>
   <div class="home">
     <div class="left-panel">
-      <WeatherCity />
+      <WeatherCity
+        :currentItemWeather="currentItemWeather"
+        @update:currentItemWeather="(e) => changeCurrentItemWeather(e)"
+      />
     </div>
     <div class="widget-list-and-header">
       <h2 class="header-widget-list">Others cities</h2>
@@ -23,7 +30,7 @@ const isVisiable = ref(false);
       <WidgetList />
     </div>
 
-    <RightPanel />
+    <RightPanel :data="currentItemWeather" />
   </div>
 </template>
 
@@ -32,6 +39,7 @@ const isVisiable = ref(false);
   margin: 0%;
 }
 .input-city {
+  margin-left: 2%;
   background: none;
   border: none;
   color: rgba(235, 235, 245, 0.6);
@@ -72,12 +80,11 @@ const isVisiable = ref(false);
   justify-content: center;
 }
 .header-widget-list {
-  text-align: center;
-  color: white;
+  /* Default / Bold / LargeTitle */
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;
   font-size: 34px;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 41px;
   letter-spacing: 0.37px;
   text-align: center;

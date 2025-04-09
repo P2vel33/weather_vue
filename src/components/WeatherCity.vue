@@ -26,8 +26,25 @@ const isVisiableHoursWeather = () => {
   visiableHoursWeather.value = true;
   console.log(visiableHoursWeather.value);
 };
+const { currentItemWeather } = defineProps({
+  currentItemWeather: {
+    type: Object,
+    required: true,
+  },
+});
 
 const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
+const currentNumberItemWeather = ref(0);
+
+const emit = defineEmits(["update:currentItemWeather"]);
+const updateCurrentItemWeather = (item) => {
+  emit("update:currentItemWeather", item);
+};
+
+const changeCurrentItemWeather = (itemNumber, item) => {
+  currentNumberItemWeather.value = itemNumber;
+  updateCurrentItemWeather(item);
+};
 
 // console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
 // console.log(weather.value);
@@ -85,6 +102,8 @@ const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
             )"
             :key="dataNewWeather[0].list.dt"
             :data="item"
+            :class="{ active: index === currentNumberItemWeather }"
+            @click="changeCurrentItemWeather(index, item)"
             :visiableDaysWeather
             :visiableHoursWeather
           />
@@ -95,6 +114,8 @@ const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
             )"
             :key="dataNewWeather[0].list.dt"
             :data="item"
+            :class="{ active: index === currentNumberItemWeather }"
+            @click="changeCurrentItemWeather(index, item)"
             :visiableDaysWeather
             :visiableHoursWeather
           />
@@ -106,6 +127,10 @@ const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
 </template>
 
 <style scoped>
+.active {
+  background-color: rgb(72, 49, 157);
+  transition: background-color 1s ease;
+}
 .rectangle-home-and-ellipse {
   display: flex;
   margin-top: -25%;
@@ -185,10 +210,11 @@ const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
 }
 
 .city-name {
+  /* Default / Bold / LargeTitle */
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;
   font-size: 34px;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 41px;
   letter-spacing: 0.37px;
   text-align: center;

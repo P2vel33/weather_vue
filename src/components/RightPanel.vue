@@ -1,16 +1,41 @@
 <script setup>
 import dataNewWeather from "../data/dataNewWeather";
+import gsap from "gsap";
+import { reactive, ref, watch } from "vue";
+
+const { data } = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+// const dnw = dataNewWeather[0]
 const dNW = dataNewWeather[0];
-const data = dNW.list[0];
+// const data = dNW.list[0];
 const sunrise = new Date(dNW.city.sunrise * 1000);
 const sunset = new Date(dNW.city.sunset * 1000);
-const feels_like = Number(data.main.feels_like - 271.15).toFixed();
+// const feels_like = Number(data.main.feels_like - 271.15).toFixed();
 const arrayWindDirection = ["N", "N/E", "E", "S/E", "S", "S/W", "W", "N/W"];
-data.wind.deg = 350;
-const windDirection =
+const windDirection = ref(
   data.wind.deg >= 337.5 || data.wind.deg <= 22.5
     ? arrayWindDirection[0]
-    : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
+    : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)]
+);
+
+// console.log(data);
+
+watch(
+  () => data,
+  () => {
+    windDirection.value =
+      data.wind.deg >= 337.5 || data.wind.deg <= 22.5
+        ? arrayWindDirection[0]
+        : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
+  }
+);
+// watch(number, (n) => {
+// gsap.to(tweened, { duration: 0.5, number: Number(n) || 0 });
+// });
 </script>
 
 <template>
@@ -18,43 +43,51 @@ const windDirection =
     <div class="weather-element one">
       <p>Cloudy</p>
       <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
-      <p>{{ data.clouds.all }} %</p>
+      <p class="weather-data">{{ data.clouds.all }} %</p>
     </div>
     <!-- <div class="weather-element">2</div> -->
     <div class="weather-element">
       <p>Speed wind</p>
       <img class="element" src="/public/RightPanel/wind.svg" alt="" />
-      <p>{{ data.wind.gust }} m/s {{ windDirection }}</p>
+      <p class="weather-data">{{ windDirection }} {{ data.wind.gust }} m/s</p>
     </div>
     <div class="weather-element">
       <p>Visiable</p>
       <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
-      <p>{{ data.visibility }} metrs</p>
+      <p class="weather-data">{{ data.visibility }} metrs</p>
     </div>
     <div class="weather-element">
       <p>Probability of precipitation</p>
       <img class="element" src="/public/RightPanel/rain.svg" alt="" />
-      <p>{{ data.pop }} %</p>
+      <p class="weather-data">{{ data.pop }} %</p>
     </div>
     <div class="weather-element">
       <p>Precipitation volume for 3 hours</p>
       <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
-      <p>{{ data.rain["3h"] }} mm</p>
+      <p class="weather-data">
+        {{ data?.rain === undefined ? 0 : data?.rain["3h"] }} mm
+      </p>
     </div>
     <div class="weather-element">
       <p>Sunrise</p>
       <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
-      <p>{{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}</p>
+      <p class="weather-data">
+        {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
+      </p>
     </div>
     <div class="weather-element">
       <p>Sunset</p>
       <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
-      <p>{{ `${sunset.getHours()}:${sunset.getMinutes()}` }}</p>
+      <p class="weather-data">
+        {{ `${sunset.getHours()}:${sunset.getMinutes()}` }}
+      </p>
     </div>
     <div class="weather-element">
       <p>Feels like</p>
       <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
-      <p>{{ feels_like }} °C</p>
+      <p class="weather-data">
+        {{ Number(data.main.feels_like - 271.15).toFixed() }} °C
+      </p>
     </div>
   </div>
 </template>
@@ -63,10 +96,21 @@ const windDirection =
 p {
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 41px;
-  letter-spacing: 0.37px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 33px;
+  letter-spacing: 0.36px;
+  text-align: center;
+}
+
+.weather-data {
+  /* Default / Bold / Title1 */
+  color: rgb(255, 255, 255);
+  font-family: SF Pro Display;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 33px;
+  letter-spacing: 0.36px;
   text-align: center;
 }
 
@@ -100,11 +144,14 @@ p {
   /* text-align: center; */
   /* vertical-align: center; */
   color: white;
-  width: 14vw;
-  height: 14vw;
-  font-size: 20px;
+  width: 13vw;
+  height: 13vw;
+  /* font-size: 20px; */
   /* border: 1px solid rgba(69, 39, 139, 0.9); */
-  border-radius: 25px;
+  border-radius: 50px;
+  /* border-top-right-radius: 1000px;
+  border-end-end-radius: 100px; */
+
   /* box-shadow: 1px 1px 10px 10px inset; */
   background: radial-gradient(
     100.02% 110.79% at 93% 74%,
@@ -115,9 +162,10 @@ p {
   /* cursor: pointer; */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 5%;
+  /* padding: 5%; */
+  /* gap: 5%; */
 }
 
 .weather-element:hover {

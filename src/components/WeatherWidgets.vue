@@ -36,7 +36,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].
             {{ city }}, {{ state === city ? "" : `${state}, ` }}{{ country }}
           </p>
         </div>
-        <p class="label3">{{ weatherDescription }} {{ iconId }}</p>
+        <p class="label3">{{ weatherDescription }}</p>
       </div>
     </div>
   </div>

@@ -20,6 +20,7 @@ const feels_like = Number(data.main.feels_like - 271.15).toFixed();
       Объём осадков за 3 часа: {{ data.rain["3h"] }},мм
     </div>
     <div class="weather-element">
+      <img class="sss" src="/public/RightPanel/sunrise2.svg" alt="" />
       Восход: {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
     </div>
     <div class="weather-element">
@@ -30,6 +31,12 @@ const feels_like = Number(data.main.feels_like - 271.15).toFixed();
 </template>
 
 <style scoped>
+.sss {
+  width: 100px;
+  height: 100px;
+  background-color: azure;
+}
+
 .right-panel {
   margin-top: 1%;
   width: 50%;
@@ -65,12 +72,14 @@ const feels_like = Number(data.main.feels_like - 271.15).toFixed();
 }
 
 .weather-element:hover {
-  background: radial-gradient(
-    100.02% 110.79% at 93% 74%,
-    rgba(65, 7, 199, 0.9),
-    rgba(15, 19, 46, 0.9) 100%
+  /* Weather Color/Linear/3 */
+  /* Weather Color/Linear/2 */
+  background: linear-gradient(
+    90deg,
+    rgb(89, 54, 180),
+    rgb(54, 42, 132) 103.55%
   );
-  transition: background 1s ease;
+  transition: background-color 1s ease;
 }
 
 .one {

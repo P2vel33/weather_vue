@@ -1,16 +1,31 @@
-<script setup></script>
+<script setup>
+import dataNewWeather from "../data/dataNewWeather";
+const dNW = dataNewWeather[0];
+const data = dNW.list[0];
+const sunrise = new Date(dNW.city.sunrise * 1000);
+const sunset = new Date(dNW.city.sunset * 1000);
+const feels_like = Number(data.main.feels_like - 271.15).toFixed();
+</script>
 
 <template>
   <div class="right-panel">
-    <div class="weather-element one">1</div>
+    <div class="weather-element one">Cloudy: {{ data.clouds.all }}%</div>
     <!-- <div class="weather-element">2</div> -->
-    <div class="weather-element">3</div>
-    <div class="weather-element">4</div>
-    <div class="weather-element">5</div>
-    <div class="weather-element">6</div>
-    <div class="weather-element">7</div>
-    <div class="weather-element">8</div>
-    <div class="weather-element">9</div>
+    <div class="weather-element">
+      Speed wind:{{ data.wind.gust }}, deg wind:{{ data.wind.deg }}°
+    </div>
+    <div class="weather-element">Visiable: {{ data.visibility }}, metrs</div>
+    <div class="weather-element">Вероятность осадков: {{ data.pop }}%</div>
+    <div class="weather-element">
+      Объём осадков за 3 часа: {{ data.rain["3h"] }},мм
+    </div>
+    <div class="weather-element">
+      Восход: {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
+    </div>
+    <div class="weather-element">
+      Закат: {{ `${sunset.getHours()}:${sunset.getMinutes()}` }}
+    </div>
+    <div class="weather-element">Feels like: {{ feels_like }}°C</div>
   </div>
 </template>
 
@@ -30,13 +45,32 @@
 }
 
 .weather-element {
+  /* align-items: center; */
+  /* text-align: center; */
+  /* vertical-align: center; */
   color: white;
   width: 14vw;
   height: 14vw;
-  font-size: 90px;
-  border: 3px solid white;
+  font-size: 20px;
+  /* border: 1px solid rgba(69, 39, 139, 0.9); */
   border-radius: 25px;
-  box-shadow: 1px 1px 10px 10px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 1px 1px 10px 10px inset; */
+  background: radial-gradient(
+    100.02% 110.79% at 93% 74%,
+    rgba(69, 39, 139, 0.9),
+    rgba(46, 51, 90, 0.9) 100%
+  );
+  transition: background 1s ease;
+  cursor: pointer;
+}
+
+.weather-element:hover {
+  background: radial-gradient(
+    100.02% 110.79% at 93% 74%,
+    rgba(65, 7, 199, 0.9),
+    rgba(15, 19, 46, 0.9) 100%
+  );
+  transition: background 1s ease;
 }
 
 .one {

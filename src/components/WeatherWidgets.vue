@@ -19,7 +19,7 @@ const temp_min = Number(dataWeather.main.temp_min - 273.15).toFixed();
 const iconId = dataWeather.weather[0].id;
 const weatherDescription = dataWeather.weather[0].description;
 const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].icon}@2x.png`;
-console.log(city);
+// console.log(city);
 </script>
 
 <template>

@@ -3,6 +3,7 @@ import dataWeather from "../data/dataWeather";
 import getCoordinateCity from "./getCoordinateCity";
 const weather = ref({});
 const iconId = ref(0);
+const weatherDescription = ref("");
 
 export default function getWeatherCity(city) {
   (async function gets(params) {
@@ -15,6 +16,7 @@ export default function getWeatherCity(city) {
       const response = dataWeather;
       weather.value = response.main;
       iconId.value = response.weather[0].id;
+      weatherDescription.value = response.weather[0].description;
     } catch (error) {
       console.log(error);
     }
@@ -23,5 +25,6 @@ export default function getWeatherCity(city) {
   return {
     weather,
     iconId,
+    weatherDescription,
   };
 }

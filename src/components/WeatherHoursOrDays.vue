@@ -1,20 +1,45 @@
 <script setup>
-const { data } = defineProps({
+import { watch } from "vue";
+import { useVisiableDaysOrHoursWeather } from "../store/VisiableDaysOrHoursWeather";
+
+const { data, visiableDaysWeather, visiableHoursWeather } = defineProps({
   data: {
     type: Object,
     required: true,
   },
+  visiableDaysWeather: {
+    type: Boolean,
+    required: true,
+  },
+  visiableHoursWeather: {
+    type: Boolean,
+    required: true,
+  },
 });
-
+// const { visiableDaysWeather, visiableHoursWeather } =
+// useVisiableDaysOrHoursWeather();
 const temp = Number(data.main.temp - 271.15).toFixed();
 const time = data.dt_txt.slice(-8, -3);
+const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
+const days = arrayDaysOfWeek[new Date(data.dt_txt).getDay()];
+const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+// console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
+// watch(
+//   () => visiableDaysWeather,
+//   () => {
+//     console.log("visiableDaysWeather");
+//   }
+// );
 </script>
 
 <template>
   <div class="hour-or-day">
-    <p class="time">{{ time }}</p>
+    <p class="time" v-if="visiableDaysWeather">{{ days }}</p>
+    <p class="time" v-else-if="visiableHoursWeather">{{ time }}</p>
     <div class="image-weather-and-humidity">
-      <div class="image"></div>
+      <img class="image" :src="iconWeather" />
+      <!-- src="/public/MoonCloudFastWindSmall.svg" -->
       <p class="rain">{{ data.main.humidity }}%</p>
     </div>
     <p class="temp">{{ temp }}°</p>
@@ -24,9 +49,9 @@ const time = data.dt_txt.slice(-8, -3);
 <style scoped>
 .image {
   /* Moon cloud mid rain (Big/Moon cloud mid rain) */
-  width: 32px;
-  height: 32px;
-  background-image: url("/public/MoonCloudMidRainSmall.svg");
+  width: 40px;
+  height: 40px;
+  /* background-image: url("/public/MoonCloudMidRainSmall.svg"); */
 }
 
 .rain {

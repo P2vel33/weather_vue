@@ -1,8 +1,14 @@
 <script setup>
 import dataNewWeather from "../data/dataNewWeather";
 import gsap from "gsap";
-import { motion } from "motion-v";
-import { reactive, ref, watch } from "vue";
+import {
+  motion,
+  RowValue,
+  useAnimate,
+  useMotionValue,
+  useTransform,
+} from "motion-v";
+import { onMounted, onUnmounted, onUpdated, reactive, ref, watch } from "vue";
 
 const { data } = defineProps({
   data: {
@@ -95,6 +101,7 @@ const container = {
   show: {
     opacity: 1,
     transition: {
+      // x: -50,
       when: "beforeChildren",
       staggerChildren: 0.1,
     },
@@ -104,15 +111,94 @@ const container = {
 
 const item = {
   hidden: { opacity: 0 },
-  show: { opacity: 1 },
+  show: { opacity: 1, x: [-50, 0] },
 };
+
+const [scope, animate] = useAnimate();
+watch(scope, () => {
+  const controls = animate([
+    [scope.current, { x: "100%" }],
+    ["li", { opacity: 1 }],
+  ]);
+
+  controls.speed = 0.1;
+
+  return () => controls.stop();
+});
+
+const count = useMotionValue(0);
+count.set(2);
+console.log(count.get());
+
+animate(count, 100, { onUpdated: (latest) => console.log(latest) });
+console.log(count.get());
+
+const values = {
+  x: 100,
+  color: "#f00",
+};
+
+animate(values, { x: 200, color: "#00f" });
+
+const x = useMotionValue(3);
+const ssss = useTransform(x, [0, 10], [0, 899415]);
+const aaaa = useTransform((s) => console.log(s));
+console.log(aaaa.get());
+console.log(ssss.get(), x.get());
+
+// const feels_like = useMotionValue(0);
+// const clouds = useMotionValue(0);
+// const
+// const obj = useTransform(() => {
+//   return {
+//     feels_like: useMotionValue(0),
+//     clouds: useMotionValue(0),
+//   };
+// });
+// console.log(obj);
+// // useTransform(() => feels_like.get().toFixed(1))
+// // const rounded = useTransform(() => feels_like.get().toFixed(1));
+// let controls;
+
+// onMounted(() => {
+//   controls = animate(
+//     obj,
+//     { feels_like: data.wind.deg, clouds: data.clouds.all },
+//     { duration: 5 }
+//   );
+//   console.log(obj);
+// });
+
+// console.log(obj);
+// onUnmounted(() => {
+//   controls.stop();
+// });
 </script>
 
 <template>
+  <!-- <pre class="motion-pre">
+    <RowValue :value="obj.feels_like" />
+    <RowValue :value="obj.clouds" />
+  </pre> -->
+  <pre class="motion-pre">
+    <RowValue :value="count"/>
+    <!-- <RowValue :value="values.x"/> -->
+    <!-- <RowValue :value="values.color"/> -->
+     <input type="text" :value="values.x">
+     <input type="text" :value="values.color">
+  </pre>
+
+  <!-- <ul ref="scope">
+    <li />
+    <li />
+    <li />
+  </ul> -->
+
   <!-- <motion.ol :variants="container" initial="hidden" animate="show">
     <motion.li :variants="item" />
     <motion.li :variants="item" />
   </motion.ol> -->
+
   <!-- <motion.ul
     :initial="{ '--rotate': '0deg' }"
     :animate="{ '--rotate': '360deg' }"
@@ -122,6 +208,7 @@ const item = {
     <li :style="{ transform: 'rotate(var(--rotate))' }" />
     <li :style="{ transform: 'rotate(var(--rotate))' }" />
   </motion.ul> -->
+
   <motion.div
     class="right-panel"
     :variants="container"

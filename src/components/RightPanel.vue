@@ -2,13 +2,14 @@
 import dataNewWeather from "../data/dataNewWeather";
 import gsap from "gsap";
 import {
+  animate,
   motion,
   RowValue,
   useAnimate,
   useMotionValue,
   useTransform,
 } from "motion-v";
-import { onMounted, onUnmounted, onUpdated, reactive, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 
 const { data } = defineProps({
   data: {
@@ -16,86 +17,17 @@ const { data } = defineProps({
     required: true,
   },
 });
-// const dnw = dataNewWeather[0]
 const dNW = dataNewWeather[0];
 
-// const feels_like = ref(0);
-// const clouds = ref(0);
-// const myWeatherObject = ref({
-// clouds: 0,
-// feels_like: 0,
-// });
-
-// const data = dNW.list[0];
 const sunrise = new Date(dNW.city.sunrise * 1000);
 const sunset = new Date(dNW.city.sunset * 1000);
-// const feels_like = Number(data.main.feels_like - 271.15).toFixed();
 const arrayWindDirection = ["N", "N/E", "E", "S/E", "S", "S/W", "W", "N/W"];
 const windDirection = ref(
   data.wind.deg >= 337.5 || data.wind.deg <= 22.5
     ? arrayWindDirection[0]
     : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)]
 );
-// feels_like.value = Number(data.main.feels_like - 271.15).toFixed();
-// clouds.value = data.clouds.all;
-// myWeatherObject.feels_like = feels_like.value;
-// myWeatherObject.clouds = data.clouds.all;
 
-// watch(
-//   myWeatherObject,
-//   (n) => {
-//     gsap.to(myWeatherObject, {
-//       duration: 0.5,
-//       feels_like: Number(n.feels_like) || 0,
-//       clouds: Number(n.clouds) || 0,
-//     });
-//     console.log("WORK");
-//   },
-//   { deep: true, immediate: true }
-// );
-
-// watch(
-//   [feels_like, clouds],
-//   ([newFeelsLike, newClouds]) => {
-//     myWeatherObject.value.feels_like = Number(newFeelsLike) || 0;
-//     myWeatherObject.value.clouds = Number(newClouds) || 0;
-
-//     gsap.to(myWeatherObject, {
-//       duration: 0.5,
-//       feels_like: myWeatherObject.value.feels_like,
-//       clouds: Number(newClouds) || 0,
-//     });
-//     console.log("WORK");
-//   },
-//   { immediate: true }
-// );
-
-// console.log(data);
-
-watch(
-  () => data,
-  () => {
-    windDirection.value =
-      data.wind.deg >= 337.5 || data.wind.deg <= 22.5
-        ? arrayWindDirection[0]
-        : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
-  }
-);
-// const changeMyObj = (obj) => {
-//   myObj.value.feels_like = obj.value.feels_like;
-// };
-// const myObj = ref({
-//   feels_like: 0,
-// });
-// gsap.to(myObj, {
-//   feels_like: 0,
-//   duration: 1,
-//   delta: 0.5,
-//   delay: 2,
-//   onUpdate: () => {
-//     myObj.value.feels_like = Number(data.main.feels_like - 271.15).toFixed();
-//   },
-// });
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -105,7 +37,6 @@ const container = {
       when: "beforeChildren",
       staggerChildren: 0.1,
     },
-    // duration: ,
   },
 };
 
@@ -114,65 +45,69 @@ const item = {
   show: { opacity: 1, x: [-50, 0] },
 };
 
-const [scope, animate] = useAnimate();
-watch(scope, () => {
-  const controls = animate([
-    [scope.current, { x: "100%" }],
-    ["li", { opacity: 1 }],
-  ]);
+const count1 = useMotionValue(0);
+const count2 = useMotionValue(0);
+const count3 = useMotionValue(0);
+const count4 = useMotionValue(0);
+const count5 = useMotionValue(0);
+const count6 = useMotionValue(0);
+const clouds = useTransform(() => Math.round(count1.get()));
+const speedWind = useTransform(() => Math.round(count2.get()));
+const visibility = useTransform(() => Math.round(count3.get()));
+const rainPop = useTransform(() => count4.get().toFixed(1));
+const precipitation = useTransform(() => count5.get().toFixed(2));
+const feelsLike = useTransform(() => Math.round(count6.get()));
 
-  controls.speed = 0.1;
+let controls;
+let controls2;
+const arrayAnimateValues = ref([
+  [count1, data.clouds.all, { duration: 0.5 }],
+  [count2, data.wind.gust, { duration: 0.1 }],
+  [count3, data.visibility, { duration: 0.1 }],
+  [count4, data.pop, { duration: 0.1 }],
+  [count5, data?.rain === undefined ? 0 : data?.rain["3h"], { duration: 0.1 }],
+  [count6, Number(data.main.feels_like - 271.15).toFixed(), { duration: 0.1 }],
+]);
 
-  return () => controls.stop();
+watch(
+  () => data,
+  () => {
+    windDirection.value =
+      data.wind.deg >= 337.5 || data.wind.deg <= 22.5
+        ? arrayWindDirection[0]
+        : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
+    controls2 = animate(arrayAnimateValues.value);
+    controls2?.stop();
+    console.log("WORK");
+  }
+);
+onMounted(() => {
+  controls = animate(arrayAnimateValues.value);
 });
 
-const count = useMotionValue(0);
-count.set(2);
-console.log(count.get());
+onUnmounted(() => {
+  controls?.stop();
+});
 
-animate(count, 100, { onUpdated: (latest) => console.log(latest) });
-console.log(count.get());
-
-const values = {
-  x: 100,
-  color: "#f00",
-};
-
-animate(values, { x: 200, color: "#00f" });
-
-const x = useMotionValue(3);
-const ssss = useTransform(x, [0, 10], [0, 899415]);
-const aaaa = useTransform((s) => console.log(s));
-console.log(aaaa.get());
-console.log(ssss.get(), x.get());
-
-// const feels_like = useMotionValue(0);
-// const clouds = useMotionValue(0);
-// const
-// const obj = useTransform(() => {
-//   return {
-//     feels_like: useMotionValue(0),
-//     clouds: useMotionValue(0),
-//   };
-// });
-// console.log(obj);
-// // useTransform(() => feels_like.get().toFixed(1))
-// // const rounded = useTransform(() => feels_like.get().toFixed(1));
-// let controls;
-
-// onMounted(() => {
-//   controls = animate(
-//     obj,
-//     { feels_like: data.wind.deg, clouds: data.clouds.all },
-//     { duration: 5 }
-//   );
-//   console.log(obj);
-// });
-
-// console.log(obj);
-// onUnmounted(() => {
-//   controls.stop();
-// });
+// watch(
+//   arrayAnimateValues,
+//   () => {
+//     // controls2 = animate(arrayAnimateValues.value);
+//     // controls2?.stop();
+//     // controls?.stop();
+//     // onMounted(() => {
+//     //   controls2 = animate(arrayAnimateValues.value);
+//     // });
+//     // onUnmounted(() => {
+//     //   controls2?.stop();
+//     // });
+//     onUpdated(() => {
+//       controls = animate(arrayAnimateValues.value);
+//       controls?.stop();
+//     });
+//   },
+//   { deep: true }
+// );
 </script>
 
 <template>
@@ -180,13 +115,18 @@ console.log(ssss.get(), x.get());
     <RowValue :value="obj.feels_like" />
     <RowValue :value="obj.clouds" />
   </pre> -->
-  <pre class="motion-pre">
-    <RowValue :value="count"/>
-    <!-- <RowValue :value="values.x"/> -->
-    <!-- <RowValue :value="values.color"/> -->
-     <input type="text" :value="values.x">
-     <input type="text" :value="values.color">
-  </pre>
+
+  <!-- <pre class="motion-pre"> -->
+  <!-- <RowValue :value="clouds"/> -->
+  <!-- <RowValue :value="speedWind"/> -->
+  <!-- <RowValue :value="visibility"/> -->
+  <!-- <RowValue :value="rainPop"/> -->
+  <!-- <RowValue :value="precipitation"/> -->
+  <!-- <RowValue :value="feelsLike"/> -->
+  <!-- <RowValue :value="ssss"/> -->
+  <!-- <input type="text" :value="ssss.get()"> -->
+  <!-- <input type="text" :value="values.color"> -->
+  <!-- </pre> -->
 
   <!-- <ul ref="scope">
     <li />
@@ -218,30 +158,33 @@ console.log(ssss.get(), x.get());
     <div class="weather-element one">
       <p>Cloudy</p>
       <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
-      <p class="weather-data">{{ data.clouds.all }} %</p>
+      <!-- <p class="weather-data">{{ data.clouds.all }} %</p> -->
+      <p class="weather-data">
+        <RowValue :value="clouds" />
+      </p>
     </div>
     <!-- <div class="weather-element">2</div> -->
     <motion.div class="weather-element" :variants="item">
       <p>Speed wind</p>
       <img class="element" src="/public/RightPanel/wind.svg" alt="" />
-      <p class="weather-data">{{ windDirection }} {{ data.wind.gust }} m/s</p>
+      <p class="weather-data">
+        {{ windDirection }} <RowValue :value="speedWind" /> m/s
+      </p>
     </motion.div>
     <motion.div class="weather-element" :variants="item">
       <p>Visiable</p>
       <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
-      <p class="weather-data">{{ data.visibility }} metrs</p>
+      <p class="weather-data"><RowValue :value="visibility" /> metrs</p>
     </motion.div>
     <motion.div class="weather-element" :variants="item">
       <p>Probability of precipitation</p>
       <img class="element" src="/public/RightPanel/rain.svg" alt="" />
-      <p class="weather-data">{{ data.pop }} %</p>
+      <p class="weather-data"><RowValue :value="rainPop" /> %</p>
     </motion.div>
     <motion.div class="weather-element" :variants="item">
       <p>Precipitation volume for 3 hours</p>
       <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
-      <p class="weather-data">
-        {{ data?.rain === undefined ? 0 : data?.rain["3h"] }} mm
-      </p>
+      <p class="weather-data"><RowValue :value="precipitation" /> mm</p>
     </motion.div>
     <motion.div class="weather-element" :variants="item">
       <p>Sunrise</p>
@@ -260,9 +203,7 @@ console.log(ssss.get(), x.get());
     <motion.div class="weather-element" :variants="item">
       <p>Feels like</p>
       <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
-      <p class="weather-data">
-        {{ Number(data.main.feels_like - 271.15).toFixed() }} °C
-      </p>
+      <p class="weather-data"><RowValue :value="feelsLike" /> °C</p>
     </motion.div>
   </motion.div>
 </template>
@@ -287,6 +228,7 @@ p {
 }
 
 .weather-data {
+  /* width: max-content; */
   /* Default / Bold / Title1 */
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;

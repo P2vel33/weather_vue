@@ -6,6 +6,7 @@ import dataNewWeather from "./data/dataNewWeather";
 import WeatherHoursOrDays from "./components/WeatherHoursOrDays.vue";
 import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
+// import Motion from "./components/Motion.vue";
 const isVisiable = ref(false);
 const currentItemWeather = ref(dataNewWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
@@ -31,6 +32,7 @@ const changeCurrentItemWeather = (value) => {
     </div>
 
     <RightPanel :data="currentItemWeather" />
+    <!-- <Motion /> -->
   </div>
 </template>
 

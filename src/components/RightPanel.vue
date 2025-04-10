@@ -1,6 +1,7 @@
 <script setup>
 import dataNewWeather from "../data/dataNewWeather";
 import gsap from "gsap";
+import { motion } from "motion-v";
 import { reactive, ref, watch } from "vue";
 
 const { data } = defineProps({
@@ -11,6 +12,14 @@ const { data } = defineProps({
 });
 // const dnw = dataNewWeather[0]
 const dNW = dataNewWeather[0];
+
+// const feels_like = ref(0);
+// const clouds = ref(0);
+// const myWeatherObject = ref({
+// clouds: 0,
+// feels_like: 0,
+// });
+
 // const data = dNW.list[0];
 const sunrise = new Date(dNW.city.sunrise * 1000);
 const sunset = new Date(dNW.city.sunset * 1000);
@@ -21,6 +30,39 @@ const windDirection = ref(
     ? arrayWindDirection[0]
     : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)]
 );
+// feels_like.value = Number(data.main.feels_like - 271.15).toFixed();
+// clouds.value = data.clouds.all;
+// myWeatherObject.feels_like = feels_like.value;
+// myWeatherObject.clouds = data.clouds.all;
+
+// watch(
+//   myWeatherObject,
+//   (n) => {
+//     gsap.to(myWeatherObject, {
+//       duration: 0.5,
+//       feels_like: Number(n.feels_like) || 0,
+//       clouds: Number(n.clouds) || 0,
+//     });
+//     console.log("WORK");
+//   },
+//   { deep: true, immediate: true }
+// );
+
+// watch(
+//   [feels_like, clouds],
+//   ([newFeelsLike, newClouds]) => {
+//     myWeatherObject.value.feels_like = Number(newFeelsLike) || 0;
+//     myWeatherObject.value.clouds = Number(newClouds) || 0;
+
+//     gsap.to(myWeatherObject, {
+//       duration: 0.5,
+//       feels_like: myWeatherObject.value.feels_like,
+//       clouds: Number(newClouds) || 0,
+//     });
+//     console.log("WORK");
+//   },
+//   { immediate: true }
+// );
 
 // console.log(data);
 
@@ -33,66 +75,120 @@ watch(
         : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
   }
 );
-// watch(number, (n) => {
-// gsap.to(tweened, { duration: 0.5, number: Number(n) || 0 });
+// const changeMyObj = (obj) => {
+//   myObj.value.feels_like = obj.value.feels_like;
+// };
+// const myObj = ref({
+//   feels_like: 0,
 // });
+// gsap.to(myObj, {
+//   feels_like: 0,
+//   duration: 1,
+//   delta: 0.5,
+//   delay: 2,
+//   onUpdate: () => {
+//     myObj.value.feels_like = Number(data.main.feels_like - 271.15).toFixed();
+//   },
+// });
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      when: "beforeChildren",
+      staggerChildren: 0.1,
+    },
+    // duration: ,
+  },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
+};
 </script>
 
 <template>
-  <div class="right-panel">
+  <!-- <motion.ol :variants="container" initial="hidden" animate="show">
+    <motion.li :variants="item" />
+    <motion.li :variants="item" />
+  </motion.ol> -->
+  <!-- <motion.ul
+    :initial="{ '--rotate': '0deg' }"
+    :animate="{ '--rotate': '360deg' }"
+    :transition="{ duration: 2 }"
+  >
+    <li :style="{ transform: 'rotate(var(--rotate))' }" />
+    <li :style="{ transform: 'rotate(var(--rotate))' }" />
+    <li :style="{ transform: 'rotate(var(--rotate))' }" />
+  </motion.ul> -->
+  <motion.div
+    class="right-panel"
+    :variants="container"
+    initial="hidden"
+    animate="show"
+  >
     <div class="weather-element one">
       <p>Cloudy</p>
       <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
       <p class="weather-data">{{ data.clouds.all }} %</p>
     </div>
     <!-- <div class="weather-element">2</div> -->
-    <div class="weather-element">
+    <motion.div class="weather-element" :variants="item">
       <p>Speed wind</p>
       <img class="element" src="/public/RightPanel/wind.svg" alt="" />
       <p class="weather-data">{{ windDirection }} {{ data.wind.gust }} m/s</p>
-    </div>
-    <div class="weather-element">
+    </motion.div>
+    <motion.div class="weather-element" :variants="item">
       <p>Visiable</p>
       <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
       <p class="weather-data">{{ data.visibility }} metrs</p>
-    </div>
-    <div class="weather-element">
+    </motion.div>
+    <motion.div class="weather-element" :variants="item">
       <p>Probability of precipitation</p>
       <img class="element" src="/public/RightPanel/rain.svg" alt="" />
       <p class="weather-data">{{ data.pop }} %</p>
-    </div>
-    <div class="weather-element">
+    </motion.div>
+    <motion.div class="weather-element" :variants="item">
       <p>Precipitation volume for 3 hours</p>
       <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
       <p class="weather-data">
         {{ data?.rain === undefined ? 0 : data?.rain["3h"] }} mm
       </p>
-    </div>
-    <div class="weather-element">
+    </motion.div>
+    <motion.div class="weather-element" :variants="item">
       <p>Sunrise</p>
       <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
       <p class="weather-data">
         {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
       </p>
-    </div>
-    <div class="weather-element">
+    </motion.div>
+    <motion.div class="weather-element" :variants="item">
       <p>Sunset</p>
       <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
       <p class="weather-data">
         {{ `${sunset.getHours()}:${sunset.getMinutes()}` }}
       </p>
-    </div>
-    <div class="weather-element">
+    </motion.div>
+    <motion.div class="weather-element" :variants="item">
       <p>Feels like</p>
       <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
       <p class="weather-data">
         {{ Number(data.main.feels_like - 271.15).toFixed() }} °C
       </p>
-    </div>
-  </div>
+    </motion.div>
+  </motion.div>
 </template>
 
 <style scoped>
+.motion-pre {
+  font-size: 64px;
+  color: #4ff0b7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 p {
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;

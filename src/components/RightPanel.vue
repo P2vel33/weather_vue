@@ -10,6 +10,7 @@ import {
   useTransform,
 } from "motion-v";
 import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
+import animationShift from "../motion/animationShift";
 
 const { data } = defineProps({
   data: {
@@ -27,23 +28,6 @@ const windDirection = ref(
     ? arrayWindDirection[0]
     : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)]
 );
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      // x: -50,
-      when: "beforeChildren",
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, x: [-50, 0] },
-};
 
 const count1 = useMotionValue(0);
 const count2 = useMotionValue(0);
@@ -103,7 +87,7 @@ onUnmounted(() => {
 <template>
   <motion.div
     class="right-panel"
-    :variants="container"
+    :variants="animationShift('beforeChildren', 0.1, -50, -50).container"
     initial="hidden"
     animate="show"
   >
@@ -115,43 +99,64 @@ onUnmounted(() => {
       </p>
     </div>
     <!-- <div class="weather-element">2</div> -->
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+    >
       <p>Speed wind</p>
       <img class="element" src="/public/RightPanel/wind.svg" alt="" />
       <p class="weather-data">
         {{ windDirection }} <RowValue :value="speedWind" /> m/s
       </p>
     </motion.div>
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
+    >
       <p>Visiable</p>
       <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
       <p class="weather-data"><RowValue :value="visibility" /> metrs</p>
     </motion.div>
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+    >
       <p>Probability of precipitation</p>
       <img class="element" src="/public/RightPanel/rain.svg" alt="" />
       <p class="weather-data"><RowValue :value="rainPop" /> %</p>
     </motion.div>
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
+    >
       <p>Precipitation volume for 3 hours</p>
       <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
       <p class="weather-data"><RowValue :value="precipitation" /> mm</p>
     </motion.div>
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+    >
       <p>Sunrise</p>
       <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
       <p class="weather-data">
         {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
       </p>
     </motion.div>
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
+    >
       <p>Sunset</p>
       <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
       <p class="weather-data">
         {{ `${sunset.getHours()}:${sunset.getMinutes()}` }}
       </p>
     </motion.div>
-    <motion.div class="weather-element" :variants="item">
+    <motion.div
+      class="weather-element"
+      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+    >
       <p>Feels like</p>
       <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
       <p class="weather-data"><RowValue :value="feelsLike" /> °C</p>

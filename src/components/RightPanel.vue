@@ -9,7 +9,7 @@ import {
   useMotionValue,
   useTransform,
 } from "motion-v";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
 
 const { data } = defineProps({
   data: {
@@ -59,15 +59,24 @@ const precipitation = useTransform(() => count5.get().toFixed(2));
 const feelsLike = useTransform(() => Math.round(count6.get()));
 
 let controls;
-let controls2;
-const arrayAnimateValues = ref([
-  [count1, data.clouds.all, { duration: 0.5 }],
-  [count2, data.wind.gust, { duration: 0.1 }],
-  [count3, data.visibility, { duration: 0.1 }],
-  [count4, data.pop, { duration: 0.1 }],
-  [count5, data?.rain === undefined ? 0 : data?.rain["3h"], { duration: 0.1 }],
-  [count6, Number(data.main.feels_like - 271.15).toFixed(), { duration: 0.1 }],
-]);
+const arrayAnimateValues = computed(() => {
+  return [
+    [count1, data.clouds.all, { duration: 0.3 }],
+    [count2, data.wind.gust, { duration: 0.1 }],
+    [count3, data.visibility, { duration: 0.1 }],
+    [count4, data.pop, { duration: 0.1 }],
+    [
+      count5,
+      data?.rain === undefined ? 0 : data?.rain["3h"],
+      { duration: 0.1 },
+    ],
+    [
+      count6,
+      Number((data.main.feels_like - 271.15).toFixed()),
+      { duration: 0.1 },
+    ],
+  ];
+});
 
 watch(
   () => data,
@@ -76,79 +85,22 @@ watch(
       data.wind.deg >= 337.5 || data.wind.deg <= 22.5
         ? arrayWindDirection[0]
         : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
-    controls2 = animate(arrayAnimateValues.value);
-    controls2?.stop();
-    console.log("WORK");
   }
 );
 onMounted(() => {
   controls = animate(arrayAnimateValues.value);
 });
 
+onUpdated(() => {
+  controls = animate(arrayAnimateValues.value);
+});
+
 onUnmounted(() => {
   controls?.stop();
 });
-
-// watch(
-//   arrayAnimateValues,
-//   () => {
-//     // controls2 = animate(arrayAnimateValues.value);
-//     // controls2?.stop();
-//     // controls?.stop();
-//     // onMounted(() => {
-//     //   controls2 = animate(arrayAnimateValues.value);
-//     // });
-//     // onUnmounted(() => {
-//     //   controls2?.stop();
-//     // });
-//     onUpdated(() => {
-//       controls = animate(arrayAnimateValues.value);
-//       controls?.stop();
-//     });
-//   },
-//   { deep: true }
-// );
 </script>
 
 <template>
-  <!-- <pre class="motion-pre">
-    <RowValue :value="obj.feels_like" />
-    <RowValue :value="obj.clouds" />
-  </pre> -->
-
-  <!-- <pre class="motion-pre"> -->
-  <!-- <RowValue :value="clouds"/> -->
-  <!-- <RowValue :value="speedWind"/> -->
-  <!-- <RowValue :value="visibility"/> -->
-  <!-- <RowValue :value="rainPop"/> -->
-  <!-- <RowValue :value="precipitation"/> -->
-  <!-- <RowValue :value="feelsLike"/> -->
-  <!-- <RowValue :value="ssss"/> -->
-  <!-- <input type="text" :value="ssss.get()"> -->
-  <!-- <input type="text" :value="values.color"> -->
-  <!-- </pre> -->
-
-  <!-- <ul ref="scope">
-    <li />
-    <li />
-    <li />
-  </ul> -->
-
-  <!-- <motion.ol :variants="container" initial="hidden" animate="show">
-    <motion.li :variants="item" />
-    <motion.li :variants="item" />
-  </motion.ol> -->
-
-  <!-- <motion.ul
-    :initial="{ '--rotate': '0deg' }"
-    :animate="{ '--rotate': '360deg' }"
-    :transition="{ duration: 2 }"
-  >
-    <li :style="{ transform: 'rotate(var(--rotate))' }" />
-    <li :style="{ transform: 'rotate(var(--rotate))' }" />
-    <li :style="{ transform: 'rotate(var(--rotate))' }" />
-  </motion.ul> -->
-
   <motion.div
     class="right-panel"
     :variants="container"
@@ -158,7 +110,6 @@ onUnmounted(() => {
     <div class="weather-element one">
       <p>Cloudy</p>
       <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
-      <!-- <p class="weather-data">{{ data.clouds.all }} %</p> -->
       <p class="weather-data">
         <RowValue :value="clouds" />
       </p>
@@ -228,7 +179,6 @@ p {
 }
 
 .weather-data {
-  /* width: max-content; */
   /* Default / Bold / Title1 */
   color: rgb(255, 255, 255);
   font-family: SF Pro Display;
@@ -239,21 +189,14 @@ p {
   text-align: center;
 }
 
-.firstElement {
-  width: 80%;
-  height: 80%;
-}
-
 .element {
   width: 50%;
   height: 50%;
-  /* background-color: azure; */
 }
 
 .right-panel {
   margin-top: 1%;
   width: 50%;
-  /* border: 5px solid wheat; */
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   column-gap: 3%;
@@ -261,41 +204,26 @@ p {
   justify-items: center;
   align-items: start;
   overflow-y: auto;
-  /* grid-column-start: 2; */
 }
 
 .weather-element {
-  /* align-items: center; */
-  /* text-align: center; */
-  /* vertical-align: center; */
   color: white;
   width: 13vw;
   height: 13vw;
-  /* font-size: 20px; */
-  /* border: 1px solid rgba(69, 39, 139, 0.9); */
   border-radius: 50px;
-  /* border-top-right-radius: 1000px;
-  border-end-end-radius: 100px; */
-
-  /* box-shadow: 1px 1px 10px 10px inset; */
   background: radial-gradient(
     100.02% 110.79% at 93% 74%,
     rgba(69, 39, 139, 0.9),
     rgba(46, 51, 90, 0.9) 100%
   );
   transition: background 1s ease;
-  /* cursor: pointer; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  /* padding: 5%; */
-  /* gap: 5%; */
 }
 
 .weather-element:hover {
-  /* Weather Color/Linear/3 */
-  /* Weather Color/Linear/2 */
   background: linear-gradient(
     90deg,
     rgb(89, 54, 180),

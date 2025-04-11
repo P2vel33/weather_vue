@@ -1,10 +1,18 @@
 <script setup>
 import { motion } from "motion-v";
-import dataCity from "../data/dataCity";
-import dataNewWeather from "../data/dataNewWeather";
 import dataWeather from "../data/dataWeather";
 import WeatherWidgets from "./WeatherWidgets.vue";
 import animationShift from "../motion/animationShift";
+const { dataCity, dataNewWeather } = defineProps({
+  dataCity: {
+    type: Object,
+    required: true,
+  },
+  dataNewWeather: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 
 <template>

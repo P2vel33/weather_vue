@@ -7,18 +7,26 @@ import WidgetList from "./components/WidgetList.vue";
 import { animate, motion } from "motion-v";
 import animationShift from "./motion/animationShift";
 import getCoordinateCity from "./hooks/getCoordinateCity";
+import dataCity from "./data/dataCity";
+// import dataNewWeather from "../data/dataNewWeather";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const city = ref("");
-const weatherCity = ref("");
+const weatherCity = ref("Kazan");
 const weather = ref(dataNewWeather[0]);
 const currentItemWeather = ref(dataNewWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
   currentItemWeather.value = value;
 };
-const getNameCity = (object) => {
-  console.log(object);
-};
+// const getNameCity = (object) => {
+//   console.log(object);
+// };
+
+// const getCityName = (value) => {
+//   // city.value = value;
+//   // console.log(city.value);
+//   console.log(value.target);
+// };
 
 // const changeCurrentItem = (value) => {
 // console.log(value.list[0].main.temp - -273, 15);
@@ -57,28 +65,13 @@ async function success(pos) {
     //
     // setWeather(await res.json());
     setWeather(dataNewWeather[2]);
-    console.log(getCoordinateCity().cityAndCountry.value);
+    // console.log(getCoordinateCity(weatherCity).cityAndCountry.value.city);
+    // const { cityAndCountry } = getCoordinateCity(weatherCity);
+    getCoordinateCity();
   } catch (error) {
     console.log(error);
   } finally {
-    // console.log(latitude, longitude);
-    console.log(weather.value);
   }
-  // console.log(response);
-
-  // console.log(pos);
-  // console.log(new Date(pos.timestamp));
-  // console.log(new Date());
-
-  // const weather = await this.getWeatherByCoords(latitude, longitude);
-  // if (!weather) {
-  // this.errorMessage = "Can't load weather data from ";
-  // this.loading = false;
-  // } else {
-  // this.loading = false;
-  // this.setWeatherData(weather);
-  // }
-  // console.log(latitude, longitude);
 }
 async function error(err) {
   if (err.code === 1) {
@@ -122,7 +115,7 @@ onMounted(() => {
         animate="show"
         :variants="animationShift('beforeChildren', 1, -200, 0).item"
         :weather="weather"
-        :weatherCity
+        :weatherCity="weatherCity"
         :currentItemWeather="currentItemWeather"
         @update:currentItemWeather="(e) => changeCurrentItemWeather(e)"
       />
@@ -131,7 +124,7 @@ onMounted(() => {
       <motion.h2 class="header-widget-list">Others cities</motion.h2>
       <div class="search">
         <img src="/public/searchIcon.svg" alt="" />
-        <form @submit.prevent="(e) => getNameCity(e.target.value)">
+        <form @submit.prevent="getCoordinateCity(city)">
           <input
             v-model="city"
             class="input-city"
@@ -140,7 +133,7 @@ onMounted(() => {
           />
         </form>
       </div>
-      <WidgetList />
+      <WidgetList :dataCity="dataCity" :dataNewWeather="dataNewWeather" />
     </motion.div>
     <RightPanel :data="currentItemWeather" />
   </div>

@@ -10,8 +10,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Motion: typeof import('./src/components/Motion.vue')['default']
     RightPanel: typeof import('./src/components/RightPanel.vue')['default']
-    RouterLink: typeof import('vue-router')['RouterLink']
-    RouterView: typeof import('vue-router')['RouterView']
     WeatherCity: typeof import('./src/components/WeatherCity.vue')['default']
     WeatherHoursOrDays: typeof import('./src/components/WeatherHoursOrDays.vue')['default']
     WeatherWidgets: typeof import('./src/components/WeatherWidgets.vue')['default']

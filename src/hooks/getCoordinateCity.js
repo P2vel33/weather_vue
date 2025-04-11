@@ -6,13 +6,16 @@ const lat = ref(0);
 const lon = ref(0);
 
 export default function getCoordinateCity(city) {
-  (async function gets(params) {
+  (async function gets() {
     try {
-      // const res = await fetch(
-      // `http://api.openweathermap.org/geo/1.0/direct?q=${city.value}&limit=5&appid=${api_key}`
-      // );
-      // const response = await res.json();
-      const response = dataCity[0];
+      console.log(city);
+      const res = await fetch(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${api_key}`
+      );
+      const response = await res.json();
+      dataCity.unshift(response[0]);
+      console.log(dataCity);
+      // const response = dataCity[0];
       lat.value = response[0].lat;
       lon.value = response[0].lon;
       cityAndCountry.value = {

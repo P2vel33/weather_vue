@@ -1,26 +1,20 @@
 import { defineStore } from "pinia";
+// import dataCity from '../data/dataCity';
+import dataNewWeather from "../data/dataNewWeather";
 import { ref } from "vue";
+import dataCity from "../data/dataCity";
+import dataNewWeather from "../data/dataNewWeather";
 
-export const useVisiableDaysOrHoursWeather = defineStore(
-  "visiableDaysOrHoursWeather",
-  () => {
-    const visiableDaysWeather = ref(false);
-    const visiableHoursWeather = ref(true);
-    const isVisiableDaysWeather = () => {
-      visiableDaysWeather.value = true;
-      visiableHoursWeather.value = false;
-      console.log(visiableDaysWeather.value);
-    };
-    const isVisiableHoursWeather = () => {
-      visiableDaysWeather.value = false;
-      visiableHoursWeather.value = true;
-      console.log(visiableHoursWeather.value);
-    };
-    return {
-      visiableDaysWeather,
-      visiableHoursWeather,
-      isVisiableDaysWeather,
-      isVisiableHoursWeather,
-    };
-  }
-);
+export const useCityAndWeather = defineStore("cityAndWeather", () => {
+  const dataCity = ref(dataCity);
+  const dataNewWeather = ref(dataNewWeather);
+
+  const addDataNewWeather = () => {
+    dataNewWeather.value.push;
+  };
+
+  const addDataCity = (value) => {
+    dataCity.value.unshift(value);
+  };
+  return {};
+});

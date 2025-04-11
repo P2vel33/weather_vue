@@ -1,11 +1,19 @@
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, onUnmounted, onUpdated, ref } from "vue";
 import WeatherWidgets from "./WeatherWidgets.vue";
 import getCoordinateCity from "../hooks/getCoordinateCity";
 import getWeatherCity from "../hooks/getWeatherCity";
 import dataNewWeather from "../data/dataNewWeather";
 import WeatherHoursOrDays from "./WeatherHoursOrDays.vue";
 import { useVisiableDaysOrHoursWeather } from "../store/VisiableDaysOrHoursWeather";
+import {
+  animate,
+  motion,
+  RowValue,
+  useMotionValue,
+  useTransform,
+} from "motion-v";
+import animationShift from "../motion/animationShift";
 
 // const city = ref("орел");
 const { cityAndCountry } = getCoordinateCity();
@@ -33,7 +41,6 @@ const { currentItemWeather } = defineProps({
   },
 });
 
-const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
 const currentNumberItemWeather = ref(0);
 
 const emit = defineEmits(["update:currentItemWeather"]);
@@ -46,29 +53,67 @@ const changeCurrentItemWeather = (itemNumber, item) => {
   updateCurrentItemWeather(item);
 };
 
-// console.log(arrayDaysOfWeek[new Date("2025-04-08 12:00:00").getDay()]);
-// console.log(weather.value);
-// console.log(weather);
-// console.log(weather.value.temp);
-// const city = cityAndCountry.value.city;
-// const temp = Number(weather.value.temp - 271.15).toFixed();
-// console.log(temp);
-// const temp_max = Number(weather.value.temp_max - 273.15).toFixed();
-// const temp_min = Number(weather.value.temp_min - 273.15).toFixed();
+console.log(currentItemWeather);
+
+const count1 = useMotionValue(0);
+const count2 = useMotionValue(0);
+const count3 = useMotionValue(0);
+let controls;
+const temp = useTransform(() => Math.round(count1.get()));
+const temp_min = useTransform(() => Math.round(count2.get()));
+const temp_max = useTransform(() => Math.round(count3.get()));
+
+const arrayAnimateValues = computed(() => {
+  return [
+    [
+      count1,
+      Number((currentItemWeather.main.temp - 271.15).toFixed()),
+      { duration: 1 },
+    ],
+    [
+      count2,
+      Number((currentItemWeather.main.temp_min - 271.15).toFixed()),
+      { duration: 0.1 },
+    ],
+    [
+      count3,
+      Number((currentItemWeather.main.temp_max - 271.15).toFixed()),
+      { duration: 0.1 },
+    ],
+  ];
+});
+
+onMounted(() => {
+  controls = animate(arrayAnimateValues.value);
+});
+
+onUpdated(() => {
+  controls = animate(arrayAnimateValues.value);
+});
+
+onUnmounted(() => {
+  controls?.stop();
+});
 </script>
 
 <template>
-  <!-- <div>
-    <WeatherWidgets
-      :weather="weather"
-      :cityAndCountry="cityAndCountry"
-      :iconId="iconId"
-    />
-  </div> -->
-  <div class="back">
-    <div class="content">
+  <motion.div
+    class="back"
+    :variants="animationShift('beforeChildren', 0, -50, -50).container"
+    initial="hidden"
+    animate="show"
+  >
+    <motion.div
+      class="content"
+      :variants="animationShift('beforeChildren', 0, -50, -50).container"
+      initial="hidden"
+      animate="show"
+    >
       <p class="city-name">{{ cityAndCountry.city }}</p>
-      <p class="temp">{{ Number(weather.temp - 271.15).toFixed() }}°</p>
+      <p class="temp">
+        <!-- {{ Number((currentItemWeather.main.temp - 271.15).toFixed()) }}° -->
+        <RowValue :value="temp" />°
+      </p>
       <div class="label2">
         <p class="label21">
           {{
@@ -77,12 +122,13 @@ const changeCurrentItemWeather = (itemNumber, item) => {
           }}
         </p>
         <p class="label22">
-          H:{{ Number(weather.temp_max - 273.15).toFixed() }}° L:{{
-            Number(weather.temp_min - 273.15).toFixed()
-          }}°
+          <!-- {{ Number((currentItemWeather.main.temp_max - 273.15).toFixed()) }} -->
+          H:<RowValue :value="temp_max" />°
+          <!-- {{ Number((currentItemWeather.main.temp_min - 273.15).toFixed()) }} -->
+          L:<RowValue :value="temp_min" />°
         </p>
       </div>
-    </div>
+    </motion.div>
     <div class="homes"></div>
     <div class="rectangle-home-and-ellipse">
       <div class="rectangleHome">
@@ -123,10 +169,16 @@ const changeCurrentItemWeather = (itemNumber, item) => {
       </div>
       <!-- <div class="ellipseRight"></div> -->
     </div>
-  </div>
+  </motion.div>
 </template>
 
 <style scoped>
+.waw {
+  width: 100px;
+  height: 100px;
+  background-color: green;
+}
+
 .active {
   background-color: rgb(72, 49, 157);
   transition: background-color 1s ease;
@@ -185,7 +237,7 @@ const changeCurrentItemWeather = (itemNumber, item) => {
 .hour-or-week {
   /* Default/Bold/Subheadline */
   color: rgba(235, 235, 245, 0.6);
-  font-family: SF Pro Text;
+  font-family: "Roboto", sans-serif;
   font-size: 15px;
   font-weight: 600;
   line-height: 20px;
@@ -212,7 +264,7 @@ const changeCurrentItemWeather = (itemNumber, item) => {
 .city-name {
   /* Default / Bold / LargeTitle */
   color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   font-size: 34px;
   font-weight: 700;
   line-height: 41px;
@@ -233,7 +285,7 @@ const changeCurrentItemWeather = (itemNumber, item) => {
   width: 127px;
   height: 70px;
   color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   font-size: 96px;
   font-weight: 200;
   line-height: 70px;
@@ -244,7 +296,7 @@ const changeCurrentItemWeather = (itemNumber, item) => {
 .label2 {
   width: 115px;
   height: 48px;
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 600;
   line-height: 24px;

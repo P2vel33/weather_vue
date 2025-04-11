@@ -90,7 +90,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].
   left: 20px;
   top: 48px;
   color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   /* font-size: 11.3vw; */
   font-size: 64px;
   font-weight: 400;
@@ -121,12 +121,12 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].
   height: 9.7%;
   left: 69.2%;
   top: 78.1%; */
-  width: 81px;
+  width: 100px;
   height: 18px;
-  left: 237px;
+  left: 220px;
   top: 136px;
   color: rgb(255, 255, 255);
-  font-family: SF Pro Text;
+  font-family: "Roboto", sans-serif;
   /* font-size: 2.71vw; */
   font-size: 13px;
   font-weight: 400;

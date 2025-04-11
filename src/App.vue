@@ -37,6 +37,8 @@ const changeCurrentItemWeather = (value) => {
 </template>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
 * {
   margin: 0%;
 }
@@ -45,7 +47,13 @@ const changeCurrentItemWeather = (value) => {
   background: none;
   border: none;
   color: rgba(235, 235, 245, 0.6);
-  font-family: SF Pro Text;
+
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  /* font-variation-settings: "wdth" 100; */
+  /* font-family: "Roboto", sans-serif sans-serif; */
+  /* font-family: Arial, Helvetica, sans-serif sans-serif; */
   font-size: 17px;
   font-weight: 400;
   line-height: 22px;
@@ -84,7 +92,7 @@ const changeCurrentItemWeather = (value) => {
 .header-widget-list {
   /* Default / Bold / LargeTitle */
   color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   font-size: 34px;
   font-weight: 700;
   line-height: 41px;

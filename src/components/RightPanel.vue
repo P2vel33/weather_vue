@@ -94,9 +94,7 @@ onUnmounted(() => {
     <div class="weather-element one">
       <p>Cloudy</p>
       <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
-      <p class="weather-data">
-        <RowValue :value="clouds" />
-      </p>
+      <p class="weather-data"><RowValue :value="clouds" /> %</p>
     </div>
     <!-- <div class="weather-element">2</div> -->
     <motion.div
@@ -175,7 +173,7 @@ onUnmounted(() => {
 
 p {
   color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   font-size: 28px;
   font-weight: 700;
   line-height: 33px;
@@ -186,7 +184,7 @@ p {
 .weather-data {
   /* Default / Bold / Title1 */
   color: rgb(255, 255, 255);
-  font-family: SF Pro Display;
+  font-family: "Roboto", sans-serif;
   font-size: 28px;
   font-weight: 700;
   line-height: 33px;
@@ -204,10 +202,13 @@ p {
   width: 50%;
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-  column-gap: 3%;
-  row-gap: 2%;
+  /* column-gap: 3%; */
+  /* row-gap: 20%; */
   justify-items: center;
   align-items: start;
+  align-content: space-between;
+  justify-content: space-between;
+
   overflow-y: auto;
 }
 

@@ -6,6 +6,7 @@ import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
 import { animate, motion } from "motion-v";
 import animationShift from "./motion/animationShift";
+import getCoordinateCity from "./hooks/getCoordinateCity";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const city = ref("");
@@ -14,6 +15,9 @@ const weather = ref(dataNewWeather[0]);
 const currentItemWeather = ref(dataNewWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
   currentItemWeather.value = value;
+};
+const getNameCity = (object) => {
+  console.log(object);
 };
 
 // const changeCurrentItem = (value) => {
@@ -53,6 +57,7 @@ async function success(pos) {
     //
     // setWeather(await res.json());
     setWeather(dataNewWeather[2]);
+    console.log(getCoordinateCity().cityAndCountry.value);
   } catch (error) {
     console.log(error);
   } finally {
@@ -126,12 +131,14 @@ onMounted(() => {
       <motion.h2 class="header-widget-list">Others cities</motion.h2>
       <div class="search">
         <img src="/public/searchIcon.svg" alt="" />
-        <input
-          v-model="city"
-          class="input-city"
-          type="text"
-          placeholder="Kazan"
-        />
+        <form @submit.prevent="(e) => getNameCity(e.target.value)">
+          <input
+            v-model="city"
+            class="input-city"
+            type="text"
+            placeholder="Kazan"
+          />
+        </form>
       </div>
       <WidgetList />
     </motion.div>

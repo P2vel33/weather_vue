@@ -54,6 +54,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].
   justify-content: space-evenly;
   align-items: center;
   gap: 50px;
+  cursor: pointer;
 }
 .div {
   position: relative;

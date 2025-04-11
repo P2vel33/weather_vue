@@ -38,7 +38,7 @@ const count6 = useMotionValue(0);
 const clouds = useTransform(() => Math.round(count1.get()));
 const speedWind = useTransform(() => Math.round(count2.get()));
 const visibility = useTransform(() => Math.round(count3.get()));
-const rainPop = useTransform(() => count4.get().toFixed(1));
+const rainPop = useTransform(() => count4.get().toFixed());
 const precipitation = useTransform(() => count5.get().toFixed(2));
 const feelsLike = useTransform(() => Math.round(count6.get()));
 
@@ -47,8 +47,12 @@ const arrayAnimateValues = computed(() => {
   return [
     [count1, data.clouds.all, { duration: 0.3 }],
     [count2, data.wind.gust, { duration: 0.1 }],
-    [count3, data.visibility, { duration: 0.1 }],
-    [count4, data.pop, { duration: 0.1 }],
+    [
+      count3,
+      data?.visibility === undefined ? 10 : data?.visibility,
+      { duration: 0.1 },
+    ],
+    [count4, data.pop * 100, { duration: 0.1 }],
     [
       count5,
       data?.rain === undefined ? 0 : data?.rain["3h"],
@@ -113,7 +117,7 @@ onUnmounted(() => {
     >
       <p>Visiable</p>
       <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
-      <p class="weather-data"><RowValue :value="visibility" /> metrs</p>
+      <p class="weather-data">≈ <RowValue :value="visibility" /> metrs</p>
     </motion.div>
     <motion.div
       class="weather-element"

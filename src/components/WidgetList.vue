@@ -5,8 +5,8 @@ import dataWeather from "../data/dataWeather";
 import WeatherWidgets from "./WeatherWidgets.vue";
 // dataNewWeather
 // dataWeather
-const dC = dataCity[0];
-const dW = dataWeather[0];
+// const dC = dataCity[0];
+// const dW = dataWeather[0];
 </script>
 
 <template>

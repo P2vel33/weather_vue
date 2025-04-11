@@ -1,11 +1,7 @@
 <script setup>
-import { computed, onMounted, onUnmounted, onUpdated, ref } from "vue";
-import WeatherWidgets from "./WeatherWidgets.vue";
+import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
 import getCoordinateCity from "../hooks/getCoordinateCity";
-import getWeatherCity from "../hooks/getWeatherCity";
-import dataNewWeather from "../data/dataNewWeather";
 import WeatherHoursOrDays from "./WeatherHoursOrDays.vue";
-import { useVisiableDaysOrHoursWeather } from "../store/VisiableDaysOrHoursWeather";
 import {
   animate,
   motion,
@@ -15,33 +11,31 @@ import {
 } from "motion-v";
 import animationShift from "../motion/animationShift";
 
-// const city = ref("орел");
 const { cityAndCountry } = getCoordinateCity();
-const { weather, iconId, weatherDescription } = getWeatherCity();
-// console.log(cityAndCountry.value.city);
-// const { isVisiableDaysWeather, isVisiableHoursWeather } =
-// useVisiableDaysOrHoursWeather();
 const visiableDaysWeather = ref(false);
 const visiableHoursWeather = ref(true);
 
 const isVisiableDaysWeather = () => {
   visiableDaysWeather.value = true;
   visiableHoursWeather.value = false;
-  console.log(visiableDaysWeather.value);
 };
 const isVisiableHoursWeather = () => {
   visiableDaysWeather.value = false;
   visiableHoursWeather.value = true;
-  console.log(visiableHoursWeather.value);
 };
-const { currentItemWeather } = defineProps({
+const { currentItemWeather, weather } = defineProps({
   currentItemWeather: {
+    type: Object,
+    required: true,
+  },
+  weather: {
     type: Object,
     required: true,
   },
 });
 
 const currentNumberItemWeather = ref(0);
+const currentNumberItemWeatherDay = ref(0);
 
 const emit = defineEmits(["update:currentItemWeather"]);
 const updateCurrentItemWeather = (item) => {
@@ -53,7 +47,17 @@ const changeCurrentItemWeather = (itemNumber, item) => {
   updateCurrentItemWeather(item);
 };
 
-console.log(currentItemWeather);
+const changeCurrentItemWeatherDay = (itemNumber, item) => {
+  isVisiableHoursWeather();
+  currentNumberItemWeather.value = 0;
+  currentNumberItemWeatherDay.value = itemNumber;
+  updateCurrentItemWeather(item);
+};
+
+const weatherOfDay = ref(0);
+const changeWeatherOfDay = (value) => {
+  weatherOfDay.value = value;
+};
 
 const count1 = useMotionValue(0);
 const count2 = useMotionValue(0);
@@ -110,22 +114,16 @@ onUnmounted(() => {
       animate="show"
     >
       <p class="city-name">{{ cityAndCountry.city }}</p>
-      <p class="temp">
-        <!-- {{ Number((currentItemWeather.main.temp - 271.15).toFixed()) }}° -->
-        <RowValue :value="temp" />°
-      </p>
+      <p class="temp"><RowValue :value="temp" />°</p>
       <div class="label2">
         <p class="label21">
           {{
-            weatherDescription.charAt(0).toUpperCase() +
-            weatherDescription.slice(1)
+            weather.list[0].weather[0].description.charAt(0).toUpperCase() +
+            weather.list[0].weather[0].description.slice(1)
           }}
         </p>
         <p class="label22">
-          <!-- {{ Number((currentItemWeather.main.temp_max - 273.15).toFixed()) }} -->
-          H:<RowValue :value="temp_max" />°
-          <!-- {{ Number((currentItemWeather.main.temp_min - 273.15).toFixed()) }} -->
-          L:<RowValue :value="temp_min" />°
+          H:<RowValue :value="temp_max" />° L:<RowValue :value="temp_min" />°
         </p>
       </div>
     </motion.div>
@@ -143,10 +141,10 @@ onUnmounted(() => {
         <div class="weather-hours-scroll">
           <WeatherHoursOrDays
             v-if="visiableHoursWeather"
-            v-for="(item, index) of dataNewWeather[0].list.filter(
-              (el, index) => index < 9
-            )"
-            :key="dataNewWeather[0].list.dt"
+            v-for="(item, index) of weather.list.filter((el, index) => {
+              return 8 * weatherOfDay < index && index < 8 * (weatherOfDay + 1);
+            })"
+            :key="weather.list.dt"
             :data="item"
             :class="{ active: index === currentNumberItemWeather }"
             @click="changeCurrentItemWeather(index, item)"
@@ -155,30 +153,26 @@ onUnmounted(() => {
           />
           <WeatherHoursOrDays
             v-if="visiableDaysWeather"
-            v-for="(item, index) of dataNewWeather[0].list.filter(
+            v-for="(item, index) of weather.list.filter(
               (el, index) => index % 8 === 0
             )"
-            :key="dataNewWeather[0].list.dt"
+            :key="weather.list.dt"
             :data="item"
-            :class="{ active: index === currentNumberItemWeather }"
-            @click="changeCurrentItemWeather(index, item)"
+            :class="{ active: index === currentNumberItemWeatherDay }"
+            @click="
+              changeCurrentItemWeatherDay(index, item);
+              changeWeatherOfDay(index);
+            "
             :visiableDaysWeather
             :visiableHoursWeather
           />
         </div>
       </div>
-      <!-- <div class="ellipseRight"></div> -->
     </div>
   </motion.div>
 </template>
 
 <style scoped>
-.waw {
-  width: 100px;
-  height: 100px;
-  background-color: green;
-}
-
 .active {
   background-color: rgb(72, 49, 157);
   transition: background-color 1s ease;
@@ -202,35 +196,19 @@ onUnmounted(() => {
 }
 
 .weather-hours-scroll {
-  /* margin-top: -70%; */
   display: flex;
   flex-direction: row;
   margin-left: 5%;
   margin-right: 5%;
-  /* align-items: center; */
-  /* justify-content: center; */
   gap: 20px;
   overflow-x: auto;
-  /* overflow-y: auto; */
-  /* z-index: 100; */
   scroll-behavior: smooth;
-  /* transform: rotate(-90deg) translateY(-60px); */
-  /* transform-origin: right top; */
-  /* transform: rotate(-90deg); */
-  /* scrollbar-color: */
 }
 
-/* .weather-hours-scroll > div { */
-/* transform: rotate(90deg); */
-/* transform-origin: left top; */
-/* } */
-
 .div-hour-or-week {
-  /* margin-top: -80%; */
   width: 100%;
   display: flex;
   flex-direction: row;
-  /* gap: 50px; */
   justify-content: space-around;
   border-radius: 25px;
 }
@@ -248,15 +226,9 @@ onUnmounted(() => {
   cursor: pointer;
   z-index: 3;
   transition: all 0.5s linear;
-  /* border-bottom: 3px solid white; */
 }
 .hour-or-week:hover {
-  /* border-radius: 44px; */
-
-  /* box-shadow: inset 0px 1px 0px 0px rgb(255, 255, 255),0px 20px 100px 0px rgba(74, 57, 127, 0.7); */
-  /* background: radial-gradient(70.88% 110.79% at 93% 74%,rgb(69, 39, 139),rgb(46, 51, 90) 100%)Предупреждение: градиент использует вращение, не поддерживаемое CSS, и может работать не так, как ожидается.; */
   box-shadow: 0px 10px 10px 0px rgba(74, 57, 127, 0.7);
-  /* rgba(83, 13, 97, 0.5); */
   color: rgba(255, 255, 255, 0.9);
   transition: all 0.5s linear;
 }
@@ -326,8 +298,6 @@ onUnmounted(() => {
   align-items: center;
   text-align: center;
   justify-content: center;
-  /* width: 390px; */
-  /* height: 844px; */
   border-radius: 50px;
 }
 .homes {
@@ -340,7 +310,6 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  /* align-items: center; */
   gap: 50px;
   height: 325px;
   width: 392px;
@@ -354,7 +323,6 @@ onUnmounted(() => {
   height: 250px;
   width: 250px;
   margin-top: 7%;
-  /* margin-right: 20%; */
   z-index: 0;
   background-repeat: no-repeat;
   background-image: url("/public/EllipseRight.svg");

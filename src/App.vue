@@ -1,23 +1,94 @@
 <script setup>
-import { ref } from "vue";
-import WeatherWidgets from "./components/WeatherWidgets.vue";
+import { onMounted, ref } from "vue";
 import WeatherCity from "./components/WeatherCity.vue";
 import dataNewWeather from "./data/dataNewWeather";
-import WeatherHoursOrDays from "./components/WeatherHoursOrDays.vue";
 import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
-// import Motion from "./components/Motion.vue";
-const isVisiable = ref(false);
+
+const API_KEY = import.meta.env.VITE_API_KEY;
+const city = ref("");
+const weather = ref(dataNewWeather[0]);
 const currentItemWeather = ref(dataNewWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
   currentItemWeather.value = value;
 };
+
+// const getLatAndLon = async () => {
+// const responseLon = await fetch("https://ipapi.co/longitude");
+// const responseLat = await fetch("https://ipapi.co/latitude");
+// lon.value = await responseLon.json();
+// lat.value = await responseLat.json();
+// console.log(lat.value, lon.value);
+// };
+
+// getLatAndLon();
+
+async function success(pos) {
+  try {
+    const { latitude, longitude } = pos.coords;
+    // const res = await fetch(
+    //   `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+    // );
+    // weather.value = await res.json();
+    weather.value = dataNewWeather[2];
+    currentItemWeather.value = weather.value.list[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    // console.log(latitude, longitude);
+    console.log(weather.value);
+  }
+  // console.log(response);
+
+  // console.log(pos);
+  // console.log(new Date(pos.timestamp));
+  // console.log(new Date());
+
+  // const weather = await this.getWeatherByCoords(latitude, longitude);
+  // if (!weather) {
+  // this.errorMessage = "Can't load weather data from ";
+  // this.loading = false;
+  // } else {
+  // this.loading = false;
+  // this.setWeatherData(weather);
+  // }
+  // console.log(latitude, longitude);
+}
+async function error(err) {
+  if (err.code === 1) {
+    console.log("Not enough permissions");
+  } else if (err.code === 2) {
+    console.log("Position unavailable");
+  } else if (err.code === 3) {
+    console.log("Timeout exceeded");
+  } else {
+    console.log("Unknown error");
+  }
+  // const { latitude, longitude } = await this.getLocationByIp();
+  // this.weatherData = await this.getWeatherByCoords(latitude, longitude);
+  // if (!this.weatherData) {
+  // throw new Error("Can't load weather data from the ");
+  // } else {
+  // setWeatherData(this.weatherData);
+  // }
+}
+// console.log(time.now());
+
+onMounted(() => {
+  navigator.geolocation.getCurrentPosition(success, error, {
+    enableHighAccuracy: true,
+    // timeout: 5000,
+    maximumAge: 0,
+  });
+});
 </script>
 
 <template>
+  <!-- <h1>{{ time.now() }}</h1> -->
   <div class="home">
     <div class="left-panel">
       <WeatherCity
+        :weather="weather"
         :currentItemWeather="currentItemWeather"
         @update:currentItemWeather="(e) => changeCurrentItemWeather(e)"
       />
@@ -26,7 +97,12 @@ const changeCurrentItemWeather = (value) => {
       <h2 class="header-widget-list">Others cities</h2>
       <div class="search">
         <img src="/public/searchIcon.svg" alt="" />
-        <input class="input-city" type="text" placeholder="Kazan" />
+        <input
+          v-model="city"
+          class="input-city"
+          type="text"
+          placeholder="Kazan"
+        />
       </div>
       <WidgetList />
     </div>
@@ -65,6 +141,7 @@ const changeCurrentItemWeather = (value) => {
 .input-city:focus {
   border: none;
   background: none;
+  color: white;
   outline: none;
 }
 

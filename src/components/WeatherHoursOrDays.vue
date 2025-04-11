@@ -18,23 +18,30 @@ const { data, visiableDaysWeather, visiableHoursWeather } = defineProps({
 });
 // const { visiableDaysWeather, visiableHoursWeather } =
 // useVisiableDaysOrHoursWeather();
-const temp = Number(data.main.temp - 271.15).toFixed();
-const time = data.dt_txt.slice(-8, -3);
+// const temp = Number(data.main.temp - 271.15).toFixed();
+// const time = data.dt_txt.slice(-8, -3);
 const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
-const days = arrayDaysOfWeek[new Date(data.dt_txt).getDay()];
-const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+// const days = arrayDaysOfWeek[new Date(data.dt_txt).getDay()];
+// const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
 </script>
 <template>
   <div class="hour-or-day">
-    <p class="time" v-if="visiableDaysWeather">{{ days }}</p>
-    <p class="time" v-else-if="visiableHoursWeather">{{ time }}</p>
+    <p class="time" v-if="visiableDaysWeather">
+      {{ arrayDaysOfWeek[new Date(data.dt_txt).getDay()] }}
+    </p>
+    <p class="time" v-else-if="visiableHoursWeather">
+      {{ data.dt_txt.slice(-8, -3) }}
+    </p>
     <div class="image-weather-and-humidity">
-      <img class="image" :src="iconWeather" />
+      <img
+        class="image"
+        :src="`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`"
+      />
       <p class="rain">
         {{ data?.rain === undefined ? 0 : data?.rain["3h"].toFixed() }}%
       </p>
     </div>
-    <p class="temp">{{ temp }}°</p>
+    <p class="temp">{{ Number(data.main.temp - 271.15).toFixed() }}°</p>
   </div>
 </template>
 

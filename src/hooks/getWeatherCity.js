@@ -2,7 +2,7 @@ import { ref } from "vue";
 import dataWeather from "../data/dataWeather";
 import getCoordinateCity from "./getCoordinateCity";
 const weather = ref({});
-const iconId = ref(0);
+// const iconId = ref(0);
 const weatherDescription = ref("");
 
 export default function getWeatherCity(city) {
@@ -25,7 +25,7 @@ export default function getWeatherCity(city) {
 
   return {
     weather,
-    iconId,
+    // iconId,
     weatherDescription,
   };
 }

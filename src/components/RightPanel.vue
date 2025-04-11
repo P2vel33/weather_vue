@@ -218,8 +218,8 @@ p {
 
 .weather-element {
   color: white;
-  width: 13vw;
-  height: 13vw;
+  width: 80%;
+  height: 80%;
   border-radius: 50px;
   background: radial-gradient(
     100.02% 110.79% at 93% 74%,

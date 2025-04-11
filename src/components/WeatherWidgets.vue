@@ -1,6 +1,10 @@
 <script setup>
-const { dataWeather, dataCity } = defineProps({
-  dataWeather: {
+import { motion } from "motion-v";
+import animationShift from "../motion/animationShift";
+import { inject } from "vue";
+
+const { dataNewWeather, dataCity } = defineProps({
+  dataNewWeather: {
     type: Object,
     required: true,
   },
@@ -9,26 +13,34 @@ const { dataWeather, dataCity } = defineProps({
     required: true,
   },
 });
-
+const { setWeather, setCityName } = inject("currentItem");
 const city = dataCity[0].name;
 const country = dataCity[0].country;
 const state = dataCity[0].state;
-const temp = Number(dataWeather.main.temp - 273.15).toFixed();
-const temp_max = Number(dataWeather.main.temp_max - 273.15).toFixed();
-const temp_min = Number(dataWeather.main.temp_min - 273.15).toFixed();
-const iconId = dataWeather.weather[0].id;
-const weatherDescription = dataWeather.weather[0].description;
-const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].icon}@2x.png`;
-// console.log(city);
+const temp = Number((dataNewWeather.list[0].main.temp - 273.15).toFixed());
+const temp_max = Number(
+  dataNewWeather.list[0].main.temp_max - 273.15
+).toFixed();
+const temp_min = Number(
+  dataNewWeather.list[0].main.temp_min - 273.15
+).toFixed();
+const weatherDescription = dataNewWeather.list[0].weather[0].description;
+const iconWeather = `https://openweathermap.org/img/wn/${dataNewWeather.list[0].weather[0].icon}@2x.png`;
 </script>
 
 <template>
-  <div class="content">
-    <!-- <p class="city">{{ city }}:</p> -->
+  <motion.div
+    class="content"
+    @click="
+      setWeather(dataNewWeather);
+      setCityName(dataCity[0].name);
+    "
+  >
     <div class="div">
       <div class="rectangle">
-        <!-- <img src="/public/Subtract.svg" class="rectangle" /> -->
-        <p class="label1">{{ temp }}°</p>
+        <p class="label1">
+          {{ Number((dataNewWeather.list[0].main.temp - 273.15).toFixed()) }}°
+        </p>
         <img class="image" :src="iconWeather" />
         <div class="label2">
           <p class="label21">H:{{ temp_max }}° L:{{ temp_min }}°</p>
@@ -39,7 +51,7 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataWeather.weather[0].
         <p class="label3">{{ weatherDescription }}</p>
       </div>
     </div>
-  </div>
+  </motion.div>
 </template>
 
 <style scoped>

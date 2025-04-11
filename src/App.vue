@@ -1,17 +1,29 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, provide, ref } from "vue";
 import WeatherCity from "./components/WeatherCity.vue";
 import dataNewWeather from "./data/dataNewWeather";
 import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
+import { animate, motion } from "motion-v";
+import animationShift from "./motion/animationShift";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const city = ref("");
+const weatherCity = ref("");
 const weather = ref(dataNewWeather[0]);
 const currentItemWeather = ref(dataNewWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
   currentItemWeather.value = value;
 };
+
+// const changeCurrentItem = (value) => {
+// console.log(value.list[0].main.temp - -273, 15);
+// currentItem.value = value;
+// setWeather(value);
+// weather.value = value;
+// currentItemWeather.value = value.list[0];
+// console.log(currentItem.value.list[0].main.temp - 273, 15);
+// };
 
 // const getLatAndLon = async () => {
 // const responseLon = await fetch("https://ipapi.co/longitude");
@@ -23,15 +35,24 @@ const changeCurrentItemWeather = (value) => {
 
 // getLatAndLon();
 
+const setWeather = (value) => {
+  weather.value = value;
+  currentItemWeather.value = weather.value.list[0];
+};
+const setCityName = (value) => {
+  weatherCity.value = value;
+  console.log(weatherCity.value);
+};
+provide("currentItem", { setWeather, setCityName });
 async function success(pos) {
   try {
-    const { latitude, longitude } = pos.coords;
+    // const { latitude, longitude } = pos.coords;
     // const res = await fetch(
-    //   `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+    // `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
     // );
-    // weather.value = await res.json();
-    weather.value = dataNewWeather[2];
-    currentItemWeather.value = weather.value.list[0];
+    //
+    // setWeather(await res.json());
+    setWeather(dataNewWeather[2]);
   } catch (error) {
     console.log(error);
   } finally {
@@ -84,17 +105,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- <h1>{{ time.now() }}</h1> -->
   <div class="home">
-    <div class="left-panel">
+    <motion.div
+      class="left-panel"
+      initial="hidden"
+      animate="show"
+      :variants="animationShift('beforeChildren', 1, 0, -100).container"
+    >
       <WeatherCity
+        initial="hidden"
+        animate="show"
+        :variants="animationShift('beforeChildren', 1, -200, 0).item"
         :weather="weather"
+        :weatherCity
         :currentItemWeather="currentItemWeather"
         @update:currentItemWeather="(e) => changeCurrentItemWeather(e)"
       />
-    </div>
-    <div class="widget-list-and-header">
-      <h2 class="header-widget-list">Others cities</h2>
+    </motion.div>
+    <motion.div class="widget-list-and-header">
+      <motion.h2 class="header-widget-list">Others cities</motion.h2>
       <div class="search">
         <img src="/public/searchIcon.svg" alt="" />
         <input
@@ -105,10 +134,8 @@ onMounted(() => {
         />
       </div>
       <WidgetList />
-    </div>
-
+    </motion.div>
     <RightPanel :data="currentItemWeather" />
-    <!-- <Motion /> -->
   </div>
 </template>
 
@@ -127,9 +154,6 @@ onMounted(() => {
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  /* font-variation-settings: "wdth" 100; */
-  /* font-family: "Roboto", sans-serif sans-serif; */
-  /* font-family: Arial, Helvetica, sans-serif sans-serif; */
   font-size: 17px;
   font-weight: 400;
   line-height: 22px;
@@ -177,44 +201,18 @@ onMounted(() => {
   text-align: center;
 }
 .home {
-  /* box-shadow: 40px 60px 150px 0px rgba(59, 38, 123, 0.7);
-  background: linear-gradient(
-    136.55deg,
-    rgb(46, 51, 90) 1.538%,
-    rgb(28, 27, 51) 95.915%
-  ); */
   padding-bottom: 10%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   gap: 5%;
-  /* border-radius: 44px; */
 
   box-shadow: inset 0px 1px 0px 0px rgb(255, 255, 255),
     0px 20px 100px 0px rgba(74, 57, 127, 0.7);
   background: radial-gradient(
-      100.02% 110.79% at 93% 74%,
-      rgba(69, 39, 139, 0.9),
-      rgba(46, 51, 90, 0.9) 100%
-    )
-    /* Предупреждение: градиент использует вращение, не поддерживаемое CSS, и может работать не так, как ожидается. */;
-  /* align-items: center; */
-}
-/* .wheather {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  border-radius: 44px;
-  box-shadow: 40px 60px 150px 0px rgba(59, 38, 123, 0.7);
-
-  background: linear-gradient(
-    136.55deg,
-    rgb(46, 51, 90) 1.538%,
-    rgb(28, 27, 51) 95.915%
+    100.02% 110.79% at 93% 74%,
+    rgba(69, 39, 139, 0.9),
+    rgba(46, 51, 90, 0.9) 100%
   );
-  padding: 10%;
-} */
+}
 </style>

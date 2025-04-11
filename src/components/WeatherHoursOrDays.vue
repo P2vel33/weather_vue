@@ -1,6 +1,6 @@
 <script setup>
-import { ref, watch } from "vue";
-import { useVisiableDaysOrHoursWeather } from "../store/VisiableDaysOrHoursWeather";
+import { animate, RowValue, useMotionValue, useTransform } from "motion-v";
+import { computed, onMounted, onUnmounted, onUpdated } from "vue";
 
 const { data, visiableDaysWeather, visiableHoursWeather } = defineProps({
   data: {
@@ -16,13 +16,35 @@ const { data, visiableDaysWeather, visiableHoursWeather } = defineProps({
     required: true,
   },
 });
-// const { visiableDaysWeather, visiableHoursWeather } =
-// useVisiableDaysOrHoursWeather();
-// const temp = Number(data.main.temp - 271.15).toFixed();
-// const time = data.dt_txt.slice(-8, -3);
 const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
-// const days = arrayDaysOfWeek[new Date(data.dt_txt).getDay()];
-// const iconWeather = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+let controls = null;
+const count1 = useMotionValue(0);
+const count2 = useMotionValue(0);
+const temp = useTransform(() => Math.round(count1.get()));
+const rain = useTransform(() => Math.round(count2.get()));
+
+const arrayAnimateValues = computed(() => {
+  return [
+    [count1, Number((data.main.temp - 273.15).toFixed()), { duration: 0.1 }],
+    [
+      count2,
+      data?.rain === undefined ? 0 : Number(data?.rain["3h"].toFixed()),
+      { duration: 0.1 },
+    ],
+  ];
+});
+
+onMounted(() => {
+  controls = animate(arrayAnimateValues.value);
+});
+
+onUpdated(() => {
+  controls = animate(arrayAnimateValues.value);
+});
+
+onUnmounted(() => {
+  controls?.stop();
+});
 </script>
 <template>
   <div class="hour-or-day">
@@ -37,11 +59,9 @@ const arrayDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"];
         class="image"
         :src="`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`"
       />
-      <p class="rain">
-        {{ data?.rain === undefined ? 0 : data?.rain["3h"].toFixed() }}%
-      </p>
+      <p class="rain"><RowValue :value="rain" />%</p>
     </div>
-    <p class="temp">{{ Number(data.main.temp - 271.15).toFixed() }}°</p>
+    <p class="temp"><RowValue :value="temp" />°</p>
   </div>
 </template>
 

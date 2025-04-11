@@ -2,14 +2,14 @@ export default function animationShift(
   whenParam,
   staggerChildrenParam,
   xBegin,
-  yBegin
+  yBegin,
+  durationParam
 ) {
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        // x: -50,
         when: whenParam,
         staggerChildren: staggerChildrenParam,
       },
@@ -19,6 +19,7 @@ export default function animationShift(
   const item = {
     hidden: { opacity: 0 },
     show: { opacity: 1, x: [xBegin, 0], y: [yBegin, 0] },
+    duration: durationParam === undefined ? 0 : durationParam,
   };
   return { container, item };
 }

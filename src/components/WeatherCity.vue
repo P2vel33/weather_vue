@@ -11,9 +11,12 @@ import {
 } from "motion-v";
 import animationShift from "../motion/animationShift";
 
-const { cityAndCountry } = getCoordinateCity();
+// const { cityAndCountry } = getCoordinateCity();
 const visiableDaysWeather = ref(false);
 const visiableHoursWeather = ref(true);
+// const activeWidgetDays = computed(() => {
+
+// })
 
 const isVisiableDaysWeather = () => {
   visiableDaysWeather.value = true;
@@ -30,6 +33,10 @@ const { currentItemWeather, weather } = defineProps({
   },
   weather: {
     type: Object,
+    required: true,
+  },
+  weatherCity: {
+    type: String,
     required: true,
   },
 });
@@ -71,17 +78,17 @@ const arrayAnimateValues = computed(() => {
   return [
     [
       count1,
-      Number((currentItemWeather.main.temp - 271.15).toFixed()),
+      Number((currentItemWeather.main.temp - 273.15).toFixed()),
       { duration: 1 },
     ],
     [
       count2,
-      Number((currentItemWeather.main.temp_min - 271.15).toFixed()),
+      Number((currentItemWeather.main.temp_min - 273.15).toFixed()),
       { duration: 0.1 },
     ],
     [
       count3,
-      Number((currentItemWeather.main.temp_max - 271.15).toFixed()),
+      Number((currentItemWeather.main.temp_max - 273.15).toFixed()),
       { duration: 0.1 },
     ],
   ];
@@ -113,7 +120,7 @@ onUnmounted(() => {
       initial="hidden"
       animate="show"
     >
-      <p class="city-name">{{ cityAndCountry.city }}</p>
+      <p class="city-name">{{ weatherCity }}</p>
       <p class="temp"><RowValue :value="temp" />°</p>
       <div class="label2">
         <p class="label21">
@@ -131,10 +138,18 @@ onUnmounted(() => {
     <div class="rectangle-home-and-ellipse">
       <div class="rectangleHome">
         <div class="div-hour-or-week">
-          <button class="hour-or-week" @click="isVisiableHoursWeather">
+          <button
+            class="hour-or-week"
+            :id="visiableHoursWeather ? 'active-widget-button' : ''"
+            @click="isVisiableHoursWeather"
+          >
             Hourly Forecast
           </button>
-          <button class="hour-or-week" @click="isVisiableDaysWeather">
+          <button
+            class="hour-or-week"
+            :id="visiableDaysWeather ? 'active-widget-button' : ''"
+            @click="isVisiableDaysWeather"
+          >
             Weekly Forecast
           </button>
         </div>
@@ -146,7 +161,9 @@ onUnmounted(() => {
             })"
             :key="weather.list.dt"
             :data="item"
-            :class="{ active: index === currentNumberItemWeather }"
+            :class="{
+              'active-widget-item': index === currentNumberItemWeather,
+            }"
             @click="changeCurrentItemWeather(index, item)"
             :visiableDaysWeather
             :visiableHoursWeather
@@ -158,7 +175,9 @@ onUnmounted(() => {
             )"
             :key="weather.list.dt"
             :data="item"
-            :class="{ active: index === currentNumberItemWeatherDay }"
+            :class="{
+              'active-widget-item': index === currentNumberItemWeatherDay,
+            }"
             @click="
               changeCurrentItemWeatherDay(index, item);
               changeWeatherOfDay(index);
@@ -173,7 +192,14 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.active {
+#active-widget-button {
+  box-shadow: 0px 10px 10px 0px rgba(74, 57, 127, 0.7);
+  border-bottom: 1px solid rgba(74, 57, 127, 1);
+  color: white;
+  transition: all 0.5s linear;
+}
+
+.active-widget-item {
   background-color: rgb(72, 49, 157);
   transition: background-color 1s ease;
 }
@@ -215,6 +241,7 @@ onUnmounted(() => {
 .hour-or-week {
   /* Default/Bold/Subheadline */
   color: rgba(235, 235, 245, 0.6);
+  /* color: rebeccapurple; */
   font-family: "Roboto", sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -224,13 +251,13 @@ onUnmounted(() => {
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 3;
-  transition: all 0.5s linear;
+  /* z-index: 3; */
+  transition: all 0.5s;
 }
 .hour-or-week:hover {
   box-shadow: 0px 10px 10px 0px rgba(74, 57, 127, 0.7);
   color: rgba(255, 255, 255, 0.9);
-  transition: all 0.5s linear;
+  transition: all 0.5s;
 }
 
 .city-name {

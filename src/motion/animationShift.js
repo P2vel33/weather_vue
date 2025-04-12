@@ -29,7 +29,6 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      // x: -50,
       when: "beforeChildren",
       staggerChildren: 0.1,
     },

@@ -2,9 +2,6 @@
 import { motion } from "motion-v";
 import WeatherWidgets from "./WeatherWidgets.vue";
 import animationShift from "../motion/animationShift";
-import { computed, watch } from "vue";
-import { useCityAndWeather } from "../store/useCityAndWeather";
-// const cityAndWeather = useCityAndWeather();
 
 const { dataCity, dataNewWeather } = defineProps({
   dataCity: {

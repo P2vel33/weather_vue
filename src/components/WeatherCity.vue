@@ -1,6 +1,5 @@
 <script setup>
 import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
-import getCoordinateCity from "../hooks/getCoordinateCity";
 import WeatherHoursOrDays from "./WeatherHoursOrDays.vue";
 import {
   animate,
@@ -11,12 +10,8 @@ import {
 } from "motion-v";
 import animationShift from "../motion/animationShift";
 
-// const { cityAndCountry } = getCoordinateCity();
 const visiableDaysWeather = ref(false);
 const visiableHoursWeather = ref(true);
-// const activeWidgetDays = computed(() => {
-
-// })
 
 const isVisiableDaysWeather = () => {
   visiableDaysWeather.value = true;

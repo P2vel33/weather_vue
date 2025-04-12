@@ -1,11 +1,8 @@
 <script setup>
-import dataNewWeather from "../data/dataNewWeather";
-import gsap from "gsap";
 import {
   animate,
   motion,
   RowValue,
-  useAnimate,
   useMotionValue,
   useTransform,
 } from "motion-v";
@@ -22,10 +19,7 @@ const { data, weather } = defineProps({
     required: true,
   },
 });
-// const dNW = dataNewWeather[0];
 
-const sunrise = new Date(weather.city.sunrise * 1000);
-const sunset = new Date(weather.city.sunset * 1000);
 const arrayWindDirection = ["N", "N/E", "E", "S/E", "S", "S/W", "W", "N/W"];
 const windDirection = ref(
   data.wind.deg >= 337.5 || data.wind.deg <= 22.5
@@ -105,10 +99,6 @@ const arrayAnimateValues = computed(() => {
     ],
   ];
 });
-// `${new Date(weather.city.sunset * 1000).getHours()}:${new Date(
-//             weather.city.sunset * 1000
-//           ).getMinutes()}`
-
 watch(
   () => data,
   () => {
@@ -185,11 +175,6 @@ onUnmounted(() => {
       <p>Sunrise</p>
       <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
       <p class="weather-data">
-        <!-- {{
-          `${new Date(weather.city.sunrise * 1000).getHours()}:${new Date(
-            weather.city.sunrise * 1000
-          ).getMinutes()}`
-        }} -->
         <RowValue :value="sunriseOne" />:<RowValue :value="sunriseTwo" />
       </p>
     </motion.div>
@@ -200,11 +185,6 @@ onUnmounted(() => {
       <p>Sunset</p>
       <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
       <p class="weather-data">
-        <!-- {{
-          `${new Date(weather.city.sunset * 1000).getHours()}:${new Date(
-            weather.city.sunset * 1000
-          ).getMinutes()}`
-        }} -->
         <RowValue :value="sunsetOne" />:<RowValue :value="sunsetTwo" />
       </p>
     </motion.div>
@@ -259,8 +239,6 @@ p {
   width: 50%;
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-  /* column-gap: 3%; */
-  /* row-gap: 20%; */
   justify-items: center;
   align-items: start;
   align-content: space-between;

@@ -6,13 +6,11 @@ import WidgetList from "./components/WidgetList.vue";
 import { motion } from "motion-v";
 import animationShift from "./motion/animationShift";
 import getCoordinateCity from "./hooks/getCoordinateCity";
-import dataCity from "./data/dataCity";
 import getLocationByIp from "./hooks/getLocationByIp";
 import getWeatherCity from "./hooks/getWeatherCity";
 import getCityByCoordinate from "./hooks/getCityByCoordinate";
 import { useCityAndWeather } from "./store/useCityAndWeather";
 const cityAndWeather = useCityAndWeather();
-// const API_KEY = import.meta.env.VITE_API_KEY;
 const city = ref("");
 const weatherCity = ref("Kazan");
 const weather = ref(cityAndWeather.newDataWeather[0]);
@@ -20,25 +18,6 @@ const currentItemWeather = ref(cityAndWeather.newDataWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
   currentItemWeather.value = value;
 };
-
-// const changeCurrentItem = (value) => {
-// console.log(value.list[0].main.temp - -273, 15);
-// currentItem.value = value;
-// setWeather(value);
-// weather.value = value;
-// currentItemWeather.value = value.list[0];
-// console.log(currentItem.value.list[0].main.temp - 273, 15);
-// };
-
-// const getLatAndLon = async () => {
-// const responseLon = await fetch("https://ipapi.co/longitude");
-// const responseLat = await fetch("https://ipapi.co/latitude");
-// lon.value = await responseLon.json();
-// lat.value = await responseLat.json();
-// console.log(lat.value, lon.value);
-// };
-
-// getLatAndLon();
 
 const setWeather = (value) => {
   weather.value = value;
@@ -48,33 +27,26 @@ const setCityName = (value) => {
   weatherCity.value = value;
   console.log(weatherCity.value);
 };
+
+const setWeatherValues = (dataOfWeather, dataOfCity) => {
+  setWeather(dataOfWeather);
+  setCityName(dataOfCity[0].name);
+  cityAndWeather.addDataNewWeather(dataOfWeather);
+  cityAndWeather.addDataCity(dataOfCity);
+};
 provide("currentItem", { setWeather, setCityName });
 
 async function success(pos) {
   try {
     const { latitude, longitude } = pos.coords;
-
-    // const res = await fetch(
-    // `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
-    // );
-    //
-    // setWeather(await res.json());
-    const response = await getWeatherCity(latitude, longitude);
-    const res = await getCityByCoordinate(latitude, longitude);
-    setWeather(response);
-    setCityName(res[0].name);
-    cityAndWeather.addDataNewWeather(response);
-    cityAndWeather.addDataCity(res);
-    // console.log(latitude, longitude);
-    // setWeather(dataNewWeather[2]);
-    // console.log(getCoordinateCity(weatherCity).cityAndCountry.value.city);
-    // const { cityAndCountry } = getCoordinateCity(weatherCity);
-    // getCoordinateCity();
+    const response = await getWeatherCity(false, latitude, longitude);
+    const res = await getCityByCoordinate(false, latitude, longitude);
+    setWeatherValues(response, res);
   } catch (error) {
     console.log(error);
-  } finally {
   }
 }
+
 async function error(err) {
   if (err.code === 1) {
     console.log("Not enough permissions");
@@ -87,34 +59,19 @@ async function error(err) {
   }
 
   const { latitude, longitude } = await getLocationByIp();
-  // console.log(latitude, longitude);
-  const response = await getWeatherCity(latitude, longitude);
-  const res = await getCityByCoordinate(latitude, longitude);
-  // const { data } = await getCoordinateCity(res[0].name);
-  setWeather(response);
-  setCityName(res[0].name);
-  cityAndWeather.addDataNewWeather(response);
-  cityAndWeather.addDataCity(res);
-  // console.log(cityAndWeather.newDataWeather);
-  // this.weatherData = await this.getWeatherByCoords(latitude, longitude);
-  // if (!this.weatherData) {
-  // throw new Error("Can't load weather data from the ");
-  // } else {
-  // setWeatherData(this.weatherData);
-  // }
+  const response = await getWeatherCity(false, latitude, longitude);
+  const res = await getCityByCoordinate(false, latitude, longitude);
+  setWeatherValues(response, res);
 }
 
 async function getWeatherBySearch(cityValue) {
-  const { latitude, longitude, data } = await getCoordinateCity(cityValue);
-  const response = await getWeatherCity(latitude, longitude);
-  setWeather(response);
-  cityAndWeather.addDataNewWeather(response);
-  cityAndWeather.addDataCity(data);
-  setCityName(data[0].name);
+  const { latitude, longitude, data } = await getCoordinateCity(
+    false,
+    cityValue
+  );
+  const response = await getWeatherCity(false, latitude, longitude);
+  setWeatherValues(response, data);
   city.value = "";
-  // console.log(response);
-  // const { latitude, longitude } = await response.json();
-  // console.log(data);
 }
 
 onMounted(() => {
@@ -159,7 +116,7 @@ onMounted(() => {
         :weather="weather"
         :weatherCity="weatherCity"
         :currentItemWeather="currentItemWeather"
-        @update:currentItemWeather="(e) => changeCurrentItemWeather(e)"
+        @update:currentItemWeather="(value) => changeCurrentItemWeather(value)"
       />
     </motion.div>
     <RightPanel :data="currentItemWeather" :weather />

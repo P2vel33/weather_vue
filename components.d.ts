@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    LeftPanel: typeof import('./src/components/LeftPanel.vue')['default']
     Motion: typeof import('./src/components/Motion.vue')['default']
     RightPanel: typeof import('./src/components/RightPanel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

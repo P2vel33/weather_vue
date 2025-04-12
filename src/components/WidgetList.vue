@@ -33,10 +33,12 @@ const cityAndWeather = useCityAndWeather();
   gap: 20px;
   max-height: 800px;
   overflow-y: auto;
+  direction: rtl;
 }
 
 .widget-list::-webkit-scrollbar {
-  width: auto;
+  width: 10px;
+  /* margin-right: 20px; */
 }
 
 .widget-list::-webkit-scrollbar-track {

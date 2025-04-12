@@ -1,32 +1,25 @@
 <script setup>
 import { onMounted, provide, ref } from "vue";
 import WeatherCity from "./components/WeatherCity.vue";
-import dataNewWeather from "./data/dataNewWeather";
 import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
-import { animate, motion } from "motion-v";
+import { motion } from "motion-v";
 import animationShift from "./motion/animationShift";
 import getCoordinateCity from "./hooks/getCoordinateCity";
 import dataCity from "./data/dataCity";
-// import dataNewWeather from "../data/dataNewWeather";
-
-const API_KEY = import.meta.env.VITE_API_KEY;
+import getLocationByIp from "./hooks/getLocationByIp";
+import getWeatherCity from "./hooks/getWeatherCity";
+import getCityByCoordinate from "./hooks/getCityByCoordinate";
+import { useCityAndWeather } from "./store/useCityAndWeather";
+const cityAndWeather = useCityAndWeather();
+// const API_KEY = import.meta.env.VITE_API_KEY;
 const city = ref("");
 const weatherCity = ref("Kazan");
-const weather = ref(dataNewWeather[0]);
-const currentItemWeather = ref(dataNewWeather[0].list[0]);
+const weather = ref(cityAndWeather.newDataWeather[0]);
+const currentItemWeather = ref(cityAndWeather.newDataWeather[0].list[0]);
 const changeCurrentItemWeather = (value) => {
   currentItemWeather.value = value;
 };
-// const getNameCity = (object) => {
-//   console.log(object);
-// };
-
-// const getCityName = (value) => {
-//   // city.value = value;
-//   // console.log(city.value);
-//   console.log(value.target);
-// };
 
 // const changeCurrentItem = (value) => {
 // console.log(value.list[0].main.temp - -273, 15);
@@ -56,18 +49,27 @@ const setCityName = (value) => {
   console.log(weatherCity.value);
 };
 provide("currentItem", { setWeather, setCityName });
+
 async function success(pos) {
   try {
-    // const { latitude, longitude } = pos.coords;
+    const { latitude, longitude } = pos.coords;
+
     // const res = await fetch(
     // `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
     // );
     //
     // setWeather(await res.json());
-    setWeather(dataNewWeather[2]);
+    const response = await getWeatherCity(latitude, longitude);
+    const res = await getCityByCoordinate(latitude, longitude);
+    setWeather(response);
+    setCityName(res[0].name);
+    cityAndWeather.addDataNewWeather(response);
+    cityAndWeather.addDataCity(res);
+    // console.log(latitude, longitude);
+    // setWeather(dataNewWeather[2]);
     // console.log(getCoordinateCity(weatherCity).cityAndCountry.value.city);
     // const { cityAndCountry } = getCoordinateCity(weatherCity);
-    getCoordinateCity();
+    // getCoordinateCity();
   } catch (error) {
     console.log(error);
   } finally {
@@ -83,7 +85,17 @@ async function error(err) {
   } else {
     console.log("Unknown error");
   }
-  // const { latitude, longitude } = await this.getLocationByIp();
+
+  const { latitude, longitude } = await getLocationByIp();
+  // console.log(latitude, longitude);
+  const response = await getWeatherCity(latitude, longitude);
+  const res = await getCityByCoordinate(latitude, longitude);
+  // const { data } = await getCoordinateCity(res[0].name);
+  setWeather(response);
+  setCityName(res[0].name);
+  cityAndWeather.addDataNewWeather(response);
+  cityAndWeather.addDataCity(res);
+  // console.log(cityAndWeather.newDataWeather);
   // this.weatherData = await this.getWeatherByCoords(latitude, longitude);
   // if (!this.weatherData) {
   // throw new Error("Can't load weather data from the ");
@@ -91,12 +103,24 @@ async function error(err) {
   // setWeatherData(this.weatherData);
   // }
 }
-// console.log(time.now());
+
+async function getWeatherBySearch(cityValue) {
+  const { latitude, longitude, data } = await getCoordinateCity(cityValue);
+  const response = await getWeatherCity(latitude, longitude);
+  setWeather(response);
+  cityAndWeather.addDataNewWeather(response);
+  cityAndWeather.addDataCity(data);
+  setCityName(data[0].name);
+  city.value = "";
+  // console.log(response);
+  // const { latitude, longitude } = await response.json();
+  // console.log(data);
+}
 
 onMounted(() => {
   navigator.geolocation.getCurrentPosition(success, error, {
     enableHighAccuracy: true,
-    // timeout: 5000,
+    timeout: 5000,
     maximumAge: 0,
   });
 });
@@ -104,8 +128,26 @@ onMounted(() => {
 
 <template>
   <div class="home">
+    <motion.div class="widget-list-and-header">
+      <motion.h2 class="header-widget-list">Other cities</motion.h2>
+      <div class="search">
+        <img src="/public/searchIcon.svg" alt="" />
+        <form @submit.prevent="getWeatherBySearch(city)">
+          <input
+            v-model="city"
+            class="input-city"
+            type="text"
+            placeholder="Kazan"
+          />
+        </form>
+      </div>
+      <WidgetList
+        :dataCity="cityAndWeather.dataCities"
+        :dataNewWeather="cityAndWeather.newDataWeather"
+      />
+    </motion.div>
     <motion.div
-      class="left-panel"
+      class="center-panel"
       initial="hidden"
       animate="show"
       :variants="animationShift('beforeChildren', 1, 0, -100).container"
@@ -120,22 +162,7 @@ onMounted(() => {
         @update:currentItemWeather="(e) => changeCurrentItemWeather(e)"
       />
     </motion.div>
-    <motion.div class="widget-list-and-header">
-      <motion.h2 class="header-widget-list">Others cities</motion.h2>
-      <div class="search">
-        <img src="/public/searchIcon.svg" alt="" />
-        <form @submit.prevent="getCoordinateCity(city)">
-          <input
-            v-model="city"
-            class="input-city"
-            type="text"
-            placeholder="Kazan"
-          />
-        </form>
-      </div>
-      <WidgetList :dataCity="dataCity" :dataNewWeather="dataNewWeather" />
-    </motion.div>
-    <RightPanel :data="currentItemWeather" />
+    <RightPanel :data="currentItemWeather" :weather />
   </div>
 </template>
 
@@ -184,6 +211,7 @@ onMounted(() => {
 }
 
 .widget-list-and-header {
+  margin-left: 5%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

@@ -1,8 +1,10 @@
 <script setup>
 import { motion } from "motion-v";
 import animationShift from "../motion/animationShift";
-import { inject } from "vue";
+import { inject, watch } from "vue";
+import { useCityAndWeather } from "../store/useCityAndWeather";
 
+const cityAndWeather = useCityAndWeather();
 const { dataNewWeather, dataCity } = defineProps({
   dataNewWeather: {
     type: Object,
@@ -13,19 +15,20 @@ const { dataNewWeather, dataCity } = defineProps({
     required: true,
   },
 });
+
 const { setWeather, setCityName } = inject("currentItem");
-const city = dataCity[0].name;
-const country = dataCity[0].country;
-const state = dataCity[0].state;
-const temp = Number((dataNewWeather.list[0].main.temp - 273.15).toFixed());
-const temp_max = Number(
-  dataNewWeather.list[0].main.temp_max - 273.15
-).toFixed();
-const temp_min = Number(
-  dataNewWeather.list[0].main.temp_min - 273.15
-).toFixed();
-const weatherDescription = dataNewWeather.list[0].weather[0].description;
-const iconWeather = `https://openweathermap.org/img/wn/${dataNewWeather.list[0].weather[0].icon}@2x.png`;
+// const city = dataCity[0].name;
+// const country = dataCity[0].country;
+// const state = dataCity[0].state;
+// const temp = Number((dataNewWeather.list[0].main.temp - 273.15).toFixed());
+// const temp_max = Number((
+// dataNewWeather.list[0].main.temp_max - 273.15
+// ).toFixed());
+// const temp_min = Number((
+// dataNewWeather.list[0].main.temp_min - 273.15
+// ).toFixed());
+// const weatherDescription = dataNewWeather.list[0].weather[0].description;
+// const iconWeather = `https://openweathermap.org/img/wn/${dataNewWeather.list[0].weather[0].icon}@2x.png`;
 </script>
 
 <template>
@@ -41,14 +44,30 @@ const iconWeather = `https://openweathermap.org/img/wn/${dataNewWeather.list[0].
         <p class="label1">
           {{ Number((dataNewWeather.list[0].main.temp - 273.15).toFixed()) }}°
         </p>
-        <img class="image" :src="iconWeather" />
+        <img
+          class="image"
+          :src="`https://openweathermap.org/img/wn/${dataNewWeather.list[0].weather[0].icon}@2x.png`"
+        />
         <div class="label2">
-          <p class="label21">H:{{ temp_max }}° L:{{ temp_min }}°</p>
+          <p class="label21">
+            H:{{
+              Number((dataNewWeather.list[0].main.temp_max - 273.15).toFixed())
+            }}° L:{{
+              Number((dataNewWeather.list[0].main.temp_min - 273.15).toFixed())
+            }}°
+          </p>
           <p class="label22">
-            {{ city }}, {{ state === city ? "" : `${state}, ` }}{{ country }}
+            {{ dataCity[0].name }},
+            {{
+              dataCity[0].state === dataCity[0].name
+                ? ""
+                : `${dataCity[0].state}, `
+            }}{{ dataCity[0].country }}
           </p>
         </div>
-        <p class="label3">{{ weatherDescription }}</p>
+        <p class="label3">
+          {{ dataNewWeather.list[0].weather[0].description }}
+        </p>
       </div>
     </div>
   </motion.div>

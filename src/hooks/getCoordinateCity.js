@@ -1,32 +1,24 @@
 import { ref } from "vue";
 import dataCity from "../data/dataCity";
-const cityAndCountry = ref({});
+
 const api_key = import.meta.env.VITE_API_KEY;
-const lat = ref(0);
-const lon = ref(0);
 
-export default function getCoordinateCity(city) {
-  (async function gets() {
-    try {
-      console.log(city);
-      const res = await fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${api_key}`
-      );
-      const response = await res.json();
-      dataCity.unshift(response[0]);
-      console.log(dataCity);
-      // const response = dataCity[0];
-      lat.value = response[0].lat;
-      lon.value = response[0].lon;
-      cityAndCountry.value = {
-        city: response[0].name,
-        country: response[0].country,
-        state: response[0].state,
-      };
-    } catch (error) {
-      console.log(error);
-    }
-  })();
-
-  return { lat, lon, cityAndCountry };
+export default async function getCoordinateCity(cityValue) {
+  try {
+    // console.log(city);
+    const res = await fetch(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${cityValue}&limit=1&appid=${api_key}`
+    );
+    const response = await res.json();
+    // console.log(dataCity);
+    // console.log(cityValue);
+    // const response = dataCity[3];
+    // dataCity.unshift(response[0]);
+    const latitude = response[0].lat;
+    const longitude = response[0].lon;
+    const data = response;
+    return { data, latitude, longitude };
+  } catch (error) {
+    console.log(error);
+  }
 }

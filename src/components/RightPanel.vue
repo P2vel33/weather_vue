@@ -12,16 +12,20 @@ import {
 import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
 import animationShift from "../motion/animationShift";
 
-const { data } = defineProps({
+const { data, weather } = defineProps({
   data: {
     type: Object,
     required: true,
   },
+  weather: {
+    type: Object,
+    required: true,
+  },
 });
-const dNW = dataNewWeather[0];
+// const dNW = dataNewWeather[0];
 
-const sunrise = new Date(dNW.city.sunrise * 1000);
-const sunset = new Date(dNW.city.sunset * 1000);
+const sunrise = new Date(weather.city.sunrise * 1000);
+const sunset = new Date(weather.city.sunset * 1000);
 const arrayWindDirection = ["N", "N/E", "E", "S/E", "S", "S/W", "W", "N/W"];
 const windDirection = ref(
   data.wind.deg >= 337.5 || data.wind.deg <= 22.5
@@ -35,12 +39,28 @@ const count3 = useMotionValue(0);
 const count4 = useMotionValue(0);
 const count5 = useMotionValue(0);
 const count6 = useMotionValue(0);
+const count7 = useMotionValue(0);
+const count8 = useMotionValue(0);
+const count9 = useMotionValue(0);
+const count10 = useMotionValue(0);
 const clouds = useTransform(() => Math.round(count1.get()));
 const speedWind = useTransform(() => Math.round(count2.get()));
 const visibility = useTransform(() => Math.round(count3.get()));
 const rainPop = useTransform(() => count4.get().toFixed());
 const precipitation = useTransform(() => count5.get().toFixed(2));
 const feelsLike = useTransform(() => Math.round(count6.get()));
+const sunriseOne = useTransform(() => Math.round(count7.get()));
+const sunriseTwo = useTransform(() =>
+  Math.round(count8.get()) < 9
+    ? `0${Math.round(count8.get())}`
+    : Math.round(count8.get())
+);
+const sunsetOne = useTransform(() => Math.round(count9.get()));
+const sunsetTwo = useTransform(() =>
+  Math.round(count10.get()) < 9
+    ? `0${Math.round(count10.get())}`
+    : Math.round(count10.get())
+);
 
 let controls;
 const arrayAnimateValues = computed(() => {
@@ -63,8 +83,31 @@ const arrayAnimateValues = computed(() => {
       Number((data.main.feels_like - 271.15).toFixed()),
       { duration: 0.1 },
     ],
+    [
+      count7,
+      Number(new Date(weather.city.sunrise * 1000).getHours()),
+      { duration: 0.1 },
+    ],
+    [
+      count8,
+      Number(new Date(weather.city.sunrise * 1000).getMinutes()),
+      { duration: 0.1 },
+    ],
+    [
+      count9,
+      Number(new Date(weather.city.sunset * 1000).getHours()),
+      { duration: 0.1 },
+    ],
+    [
+      count10,
+      Number(new Date(weather.city.sunset * 1000).getMinutes()),
+      { duration: 0.1 },
+    ],
   ];
 });
+// `${new Date(weather.city.sunset * 1000).getHours()}:${new Date(
+//             weather.city.sunset * 1000
+//           ).getMinutes()}`
 
 watch(
   () => data,
@@ -142,7 +185,12 @@ onUnmounted(() => {
       <p>Sunrise</p>
       <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
       <p class="weather-data">
-        {{ `${sunrise.getHours()}:${sunrise.getMinutes()}` }}
+        <!-- {{
+          `${new Date(weather.city.sunrise * 1000).getHours()}:${new Date(
+            weather.city.sunrise * 1000
+          ).getMinutes()}`
+        }} -->
+        <RowValue :value="sunriseOne" />:<RowValue :value="sunriseTwo" />
       </p>
     </motion.div>
     <motion.div
@@ -152,7 +200,12 @@ onUnmounted(() => {
       <p>Sunset</p>
       <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
       <p class="weather-data">
-        {{ `${sunset.getHours()}:${sunset.getMinutes()}` }}
+        <!-- {{
+          `${new Date(weather.city.sunset * 1000).getHours()}:${new Date(
+            weather.city.sunset * 1000
+          ).getMinutes()}`
+        }} -->
+        <RowValue :value="sunsetOne" />:<RowValue :value="sunsetTwo" />
       </p>
     </motion.div>
     <motion.div

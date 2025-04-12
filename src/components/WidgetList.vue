@@ -1,8 +1,11 @@
 <script setup>
 import { motion } from "motion-v";
-import dataWeather from "../data/dataWeather";
 import WeatherWidgets from "./WeatherWidgets.vue";
 import animationShift from "../motion/animationShift";
+import { computed, watch } from "vue";
+import { useCityAndWeather } from "../store/useCityAndWeather";
+// const cityAndWeather = useCityAndWeather();
+
 const { dataCity, dataNewWeather } = defineProps({
   dataCity: {
     type: Object,
@@ -25,7 +28,7 @@ const { dataCity, dataNewWeather } = defineProps({
     <WeatherWidgets
       initial="hidden"
       animate="show"
-      v-for="(item, index) of dataCity"
+      v-for="(item, index) of dataNewWeather"
       :variants="animationShift('beforeChildren', 1, 0, -300 * index).item"
       :key="index"
       :dataCity="dataCity[index]"

@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import dataCity from "../data/dataCity";
+import dataCity from "../../data/dataCity";
 
 const api_key = import.meta.env.VITE_API_KEY;
 
@@ -12,7 +12,7 @@ export default async function getCoordinateCity(staticData, cityValue) {
       );
       response = await res.json();
     } else {
-      response = dataCity[0];
+      response = dataCity[1];
     }
     const latitude = response[0].lat;
     const longitude = response[0].lon;

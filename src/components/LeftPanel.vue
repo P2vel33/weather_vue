@@ -1,19 +1,21 @@
 <script setup>
 import { motion } from "motion-v";
 import { ref } from "vue";
-import getCoordinateCity from "../hooks/getCoordinateCity";
+import getCoordinateCity from "../hooks/async/getCoordinateCity";
+import WidgetList from "./WidgetList.vue";
+import { useCityAndWeather } from "../store/useCityAndWeather";
+import getWeatherCity from "../hooks/async/getWeatherCity";
+const cityAndWeather = useCityAndWeather();
+
 const city = ref("");
+
 async function getWeatherBySearch(cityValue) {
   const { latitude, longitude, data } = await getCoordinateCity(
     false,
     cityValue
   );
   const response = await getWeatherCity(false, latitude, longitude);
-  setWeather(response);
-  setCityName(data[0].name);
-  cityAndWeather.addDataNewWeather(response);
-  cityAndWeather.addDataCity(data);
-
+  cityAndWeather.setWeatherValues(response, data);
   city.value = "";
 }
 </script>
@@ -28,14 +30,11 @@ async function getWeatherBySearch(cityValue) {
           v-model="city"
           class="input-city"
           type="text"
-          placeholder="Kazan"
+          placeholder="City name"
         />
       </form>
     </div>
-    <WidgetList
-      :dataCity="cityAndWeather.dataCities"
-      :dataNewWeather="cityAndWeather.newDataWeather"
-    />
+    <WidgetList />
   </motion.div>
 </template>
 

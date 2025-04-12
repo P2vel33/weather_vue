@@ -9,54 +9,38 @@ import {
   useTransform,
 } from "motion-v";
 import animationShift from "../motion/animationShift";
+import { useCityAndWeather } from "../store/useCityAndWeather";
+
+const cityAndWeather = useCityAndWeather();
 
 const visiableDaysWeather = ref(false);
 const visiableHoursWeather = ref(true);
+const weatherOfDay = ref(0);
+const currentNumberItemWeather = ref(0);
+const currentNumberItemWeatherDay = ref(0);
 
 const isVisiableDaysWeather = () => {
   visiableDaysWeather.value = true;
   visiableHoursWeather.value = false;
 };
+
 const isVisiableHoursWeather = () => {
   visiableDaysWeather.value = false;
   visiableHoursWeather.value = true;
 };
-const { currentItemWeather, weather } = defineProps({
-  currentItemWeather: {
-    type: Object,
-    required: true,
-  },
-  weather: {
-    type: Object,
-    required: true,
-  },
-  weatherCity: {
-    type: String,
-    required: true,
-  },
-});
-
-const currentNumberItemWeather = ref(0);
-const currentNumberItemWeatherDay = ref(0);
-
-const emit = defineEmits(["update:currentItemWeather"]);
-const updateCurrentItemWeather = (item) => {
-  emit("update:currentItemWeather", item);
-};
 
 const changeCurrentItemWeather = (itemNumber, item) => {
   currentNumberItemWeather.value = itemNumber;
-  updateCurrentItemWeather(item);
+  cityAndWeather.changeCurrentItemWeather(item);
 };
 
 const changeCurrentItemWeatherDay = (itemNumber, item) => {
   isVisiableHoursWeather();
   currentNumberItemWeather.value = 0;
   currentNumberItemWeatherDay.value = itemNumber;
-  updateCurrentItemWeather(item);
+  cityAndWeather.changeCurrentItemWeather(item);
 };
 
-const weatherOfDay = ref(0);
 const changeWeatherOfDay = (value) => {
   weatherOfDay.value = value;
 };
@@ -73,17 +57,21 @@ const arrayAnimateValues = computed(() => {
   return [
     [
       count1,
-      Number((currentItemWeather.main.temp - 273.15).toFixed()),
+      Number((cityAndWeather.currentItemWeather.main.temp - 273.15).toFixed()),
       { duration: 1 },
     ],
     [
       count2,
-      Number((currentItemWeather.main.temp_min - 273.15).toFixed()),
+      Number(
+        (cityAndWeather.currentItemWeather.main.temp_min - 273.15).toFixed()
+      ),
       { duration: 0.1 },
     ],
     [
       count3,
-      Number((currentItemWeather.main.temp_max - 273.15).toFixed()),
+      Number(
+        (cityAndWeather.currentItemWeather.main.temp_max - 273.15).toFixed()
+      ),
       { duration: 0.1 },
     ],
   ];
@@ -115,13 +103,15 @@ onUnmounted(() => {
       initial="hidden"
       animate="show"
     >
-      <p class="city-name">{{ weatherCity }}</p>
+      <p class="city-name">{{ cityAndWeather.weatherCity }}</p>
       <p class="temp"><RowValue :value="temp" />°</p>
       <div class="label2">
         <p class="label21">
           {{
-            weather.list[0].weather[0].description.charAt(0).toUpperCase() +
-            weather.list[0].weather[0].description.slice(1)
+            cityAndWeather.weather.list[0].weather[0].description
+              .charAt(0)
+              .toUpperCase() +
+            cityAndWeather.weather.list[0].weather[0].description.slice(1)
           }}
         </p>
         <p class="label22">
@@ -151,10 +141,14 @@ onUnmounted(() => {
         <div class="weather-hours-scroll">
           <WeatherHoursOrDays
             v-if="visiableHoursWeather"
-            v-for="(item, index) of weather.list.filter((el, index) => {
-              return 8 * weatherOfDay < index && index < 8 * (weatherOfDay + 1);
-            })"
-            :key="weather.list.dt"
+            v-for="(item, index) of cityAndWeather.weather.list.filter(
+              (el, index) => {
+                return (
+                  8 * weatherOfDay < index && index < 8 * (weatherOfDay + 1)
+                );
+              }
+            )"
+            :key="cityAndWeather.weather.list.dt"
             :data="item"
             :class="{
               'active-widget-item': index === currentNumberItemWeather,
@@ -165,10 +159,10 @@ onUnmounted(() => {
           />
           <WeatherHoursOrDays
             v-if="visiableDaysWeather"
-            v-for="(item, index) of weather.list.filter(
+            v-for="(item, index) of cityAndWeather.weather.list.filter(
               (el, index) => index % 8 === 0
             )"
-            :key="weather.list.dt"
+            :key="cityAndWeather.weather.list.dt"
             :data="item"
             :class="{
               'active-widget-item': index === currentNumberItemWeatherDay,

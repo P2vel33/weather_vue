@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CentralPanel: typeof import('./src/components/CentralPanel.vue')['default']
     LeftPanel: typeof import('./src/components/LeftPanel.vue')['default']
     Motion: typeof import('./src/components/Motion.vue')['default']
     RightPanel: typeof import('./src/components/RightPanel.vue')['default']

@@ -1,47 +1,27 @@
 <script setup>
-import { onMounted, provide, ref } from "vue";
+import { onMounted, ref } from "vue";
 import WeatherCity from "./components/WeatherCity.vue";
 import RightPanel from "./components/RightPanel.vue";
 import WidgetList from "./components/WidgetList.vue";
 import { motion } from "motion-v";
 import animationShift from "./motion/animationShift";
-import getCoordinateCity from "./hooks/getCoordinateCity";
-import getLocationByIp from "./hooks/getLocationByIp";
-import getWeatherCity from "./hooks/getWeatherCity";
-import getCityByCoordinate from "./hooks/getCityByCoordinate";
+import getCoordinateCity from "./hooks/async/getCoordinateCity";
+import getLocationByIp from "./hooks/async/getLocationByIp";
+import getWeatherCity from "./hooks/async/getWeatherCity";
+import getCityByCoordinate from "./hooks/async/getCityByCoordinate";
 import { useCityAndWeather } from "./store/useCityAndWeather";
+import LeftPanel from "./components/LeftPanel.vue";
+import CentralPanel from "./components/CentralPanel.vue";
+
 const cityAndWeather = useCityAndWeather();
 const city = ref("");
-const weatherCity = ref("Kazan");
-const weather = ref(cityAndWeather.newDataWeather[0]);
-const currentItemWeather = ref(cityAndWeather.newDataWeather[0].list[0]);
-const changeCurrentItemWeather = (value) => {
-  currentItemWeather.value = value;
-};
-
-const setWeather = (value) => {
-  weather.value = value;
-  currentItemWeather.value = weather.value.list[0];
-};
-const setCityName = (value) => {
-  weatherCity.value = value;
-  console.log(weatherCity.value);
-};
-
-const setWeatherValues = (dataOfWeather, dataOfCity) => {
-  setWeather(dataOfWeather);
-  setCityName(dataOfCity[0].name);
-  cityAndWeather.addDataNewWeather(dataOfWeather);
-  cityAndWeather.addDataCity(dataOfCity);
-};
-provide("currentItem", { setWeather, setCityName });
 
 async function success(pos) {
   try {
     const { latitude, longitude } = pos.coords;
     const response = await getWeatherCity(false, latitude, longitude);
     const res = await getCityByCoordinate(false, latitude, longitude);
-    setWeatherValues(response, res);
+    cityAndWeather.setWeatherValues(response, res);
   } catch (error) {
     console.log(error);
   }
@@ -57,21 +37,10 @@ async function error(err) {
   } else {
     console.log("Unknown error");
   }
-
   const { latitude, longitude } = await getLocationByIp();
   const response = await getWeatherCity(false, latitude, longitude);
   const res = await getCityByCoordinate(false, latitude, longitude);
-  setWeatherValues(response, res);
-}
-
-async function getWeatherBySearch(cityValue) {
-  const { latitude, longitude, data } = await getCoordinateCity(
-    false,
-    cityValue
-  );
-  const response = await getWeatherCity(false, latitude, longitude);
-  setWeatherValues(response, data);
-  city.value = "";
+  cityAndWeather.setWeatherValues(response, res);
 }
 
 onMounted(() => {
@@ -85,24 +54,7 @@ onMounted(() => {
 
 <template>
   <div class="home">
-    <motion.div class="widget-list-and-header">
-      <motion.h2 class="header-widget-list">Other cities</motion.h2>
-      <div class="search">
-        <img src="/public/searchIcon.svg" alt="" />
-        <form @submit.prevent="getWeatherBySearch(city)">
-          <input
-            v-model="city"
-            class="input-city"
-            type="text"
-            placeholder="Kazan"
-          />
-        </form>
-      </div>
-      <WidgetList
-        :dataCity="cityAndWeather.dataCities"
-        :dataNewWeather="cityAndWeather.newDataWeather"
-      />
-    </motion.div>
+    <LeftPanel />
     <motion.div
       class="center-panel"
       initial="hidden"
@@ -113,13 +65,13 @@ onMounted(() => {
         initial="hidden"
         animate="show"
         :variants="animationShift('beforeChildren', 1, -200, 0).item"
-        :weather="weather"
-        :weatherCity="weatherCity"
-        :currentItemWeather="currentItemWeather"
-        @update:currentItemWeather="(value) => changeCurrentItemWeather(value)"
       />
     </motion.div>
-    <RightPanel :data="currentItemWeather" :weather />
+    <CentralPanel />
+    <RightPanel
+      :data="cityAndWeather.currentItemWeather"
+      :weather="cityAndWeather.weather"
+    />
   </div>
 </template>
 

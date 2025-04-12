@@ -1,4 +1,4 @@
-import dataNewWeather from "../data/dataNewWeather";
+import dataNewWeather from "../../data/dataNewWeather";
 
 const api_key = import.meta.env.VITE_API_KEY;
 export default async function getWeatherCity(staticData, latitude, longitude) {
@@ -10,7 +10,7 @@ export default async function getWeatherCity(staticData, latitude, longitude) {
       );
       response = await res.json();
     } else {
-      response = dataNewWeather[0];
+      response = dataNewWeather[1];
     }
 
     return response;

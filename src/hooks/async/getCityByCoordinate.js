@@ -1,4 +1,4 @@
-import dataCity from "../data/dataCity";
+import dataCity from "../../data/dataCity";
 
 const api_key = import.meta.env.VITE_API_KEY;
 
@@ -15,7 +15,7 @@ export default async function getCityByCoordinate(
       );
       response = await res.json();
     } else {
-      response = dataCity[0];
+      response = dataCity[1];
     }
 
     return response;

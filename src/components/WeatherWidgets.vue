@@ -16,15 +16,15 @@ const { dataNewWeather, dataCity } = defineProps({
   },
 });
 
-const { setWeather, setCityName } = inject("currentItem");
+// const { setWeather, setCityName } = inject("currentItem");
 </script>
 
 <template>
   <motion.div
     class="content"
     @click="
-      setWeather(dataNewWeather);
-      setCityName(dataCity[0].name);
+      cityAndWeather.setWeather(dataNewWeather);
+      cityAndWeather.setCityName(dataCity[0].name);
     "
   >
     <div class="div">

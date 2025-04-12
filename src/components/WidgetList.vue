@@ -31,5 +31,21 @@ const cityAndWeather = useCityAndWeather();
   display: flex;
   flex-direction: column;
   gap: 20px;
+  max-height: 800px;
+  overflow-y: auto;
+}
+
+.widget-list::-webkit-scrollbar {
+  width: auto;
+}
+
+.widget-list::-webkit-scrollbar-track {
+  background: none; /* цвет зоны отслеживания */
+}
+
+.widget-list::-webkit-scrollbar-thumb {
+  background-color: rgb(28, 27, 51) 95.915%; /* цвет бегунка */
+  border-radius: 20px; /* округлось бегунка */
+  border: 1px solid rgba(255, 255, 255, 0.9);
 }
 </style>

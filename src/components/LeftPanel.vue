@@ -14,10 +14,10 @@ async function getWeatherBySearch(cityValue) {
     console.log(cityValue);
     cityAndWeather.setLoading();
     const { data, latitude, longitude } = await getCoordinateCity(
-      true,
+      false,
       cityValue
     );
-    const response = await getWeatherCity(true, latitude, longitude);
+    const response = await getWeatherCity(false, latitude, longitude);
     cityAndWeather.setWeatherValues(response, data);
   } catch (error) {
     cityAndWeather.removeLoading();
@@ -63,11 +63,14 @@ async function getWeatherBySearch(cityValue) {
 }
 
 .widget-list-and-header {
+  max-height: 870px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  align-items: center;
+  justify-items: center;
+  justify-content: flex-start;
   gap: 10px;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .header-widget-list {

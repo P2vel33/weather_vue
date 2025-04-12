@@ -13,6 +13,7 @@ import { useCityAndWeather } from "./store/useCityAndWeather";
 import LeftPanel from "./components/LeftPanel.vue";
 import CentralPanel from "./components/CentralPanel.vue";
 import Loading from "./components/UI/Loading.vue";
+// import Ball from "./components/Ball.vue";
 
 const cityAndWeather = useCityAndWeather();
 
@@ -20,8 +21,8 @@ async function success(pos) {
   try {
     cityAndWeather.setLoading();
     const { latitude, longitude } = pos.coords;
-    const response = await getWeatherCity(true, latitude, longitude);
-    const res = await getCityByCoordinate(true, latitude, longitude);
+    const response = await getWeatherCity(false, latitude, longitude);
+    const res = await getCityByCoordinate(false, latitude, longitude);
     cityAndWeather.setWeatherValues(response, res);
   } catch (error) {
     cityAndWeather.removeLoading();
@@ -44,8 +45,8 @@ async function error(err) {
   try {
     cityAndWeather.setLoading();
     const { latitude, longitude } = await getLocationByIp();
-    const response = await getWeatherCity(true, latitude, longitude);
-    const res = await getCityByCoordinate(true, latitude, longitude);
+    const response = await getWeatherCity(false, latitude, longitude);
+    const res = await getCityByCoordinate(false, latitude, longitude);
     cityAndWeather.setWeatherValues(response, res);
   } catch (error) {
     console.log(error);
@@ -80,6 +81,7 @@ onMounted(() => {
           animate="show"
           :variants="animationShift('beforeChildren', 1, -200, 0).item"
         />
+        <!-- <Ball /> -->
       </motion.div>
       <!-- <CentralPanel /> -->
       <RightPanel

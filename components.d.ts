@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Ball: typeof import('./src/components/Ball.vue')['default']
     CentralPanel: typeof import('./src/components/CentralPanel.vue')['default']
     LeftPanel: typeof import('./src/components/LeftPanel.vue')['default']
     Loading: typeof import('./src/components/UI/Loading.vue')['default']

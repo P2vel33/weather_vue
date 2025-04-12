@@ -81,6 +81,7 @@ watch(
   () => cityAndWeather.weather,
   () => {
     currentNumberItemWeather.value = 0;
+    currentNumberItemWeatherDay.value = 0;
   }
 );
 
@@ -228,6 +229,7 @@ onUnmounted(() => {
   gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
+  scroll-margin-top: 20px;
 }
 
 .div-hour-or-week {

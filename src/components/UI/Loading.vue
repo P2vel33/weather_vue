@@ -43,7 +43,7 @@ const dotVariants = {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: #ff0088;
+  background-color: #d400ff;
   will-change: transform;
 }
 </style>

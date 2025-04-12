@@ -8,23 +8,28 @@ import {
 } from "motion-v";
 import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
 import animationShift from "../motion/animationShift";
+import { useCityAndWeather } from "../store/useCityAndWeather";
+const cityAndWeather = useCityAndWeather();
 
-const { data, weather } = defineProps({
-  data: {
-    type: Object,
-    required: true,
-  },
-  weather: {
-    type: Object,
-    required: true,
-  },
-});
+// const { data, weather } = defineProps({
+//   data: {
+//     type: Object,
+//     required: true,
+//   },
+//   weather: {
+//     type: Object,
+//     required: true,
+//   },
+// });
 
 const arrayWindDirection = ["N", "N/E", "E", "S/E", "S", "S/W", "W", "N/W"];
 const windDirection = ref(
-  data.wind.deg >= 337.5 || data.wind.deg <= 22.5
+  cityAndWeather.currentItemWeather.wind.deg >= 337.5 ||
+    cityAndWeather.currentItemWeather.wind.deg <= 22.5
     ? arrayWindDirection[0]
-    : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)]
+    : arrayWindDirection[
+        Math.ceil((cityAndWeather.currentItemWeather.wind.deg - 22.5) / 45)
+      ]
 );
 
 const count1 = useMotionValue(0);
@@ -59,55 +64,61 @@ const sunsetTwo = useTransform(() =>
 let controls;
 const arrayAnimateValues = computed(() => {
   return [
-    [count1, data.clouds.all, { duration: 0.3 }],
-    [count2, data.wind.gust, { duration: 0.1 }],
+    [count1, cityAndWeather.currentItemWeather.clouds.all, { duration: 0.3 }],
+    [count2, cityAndWeather.currentItemWeather.wind.gust, { duration: 0.1 }],
     [
       count3,
-      data?.visibility === undefined ? 10 : data?.visibility,
+      cityAndWeather.currentItemWeather?.visibility === undefined
+        ? 10
+        : cityAndWeather.currentItemWeather?.visibility,
       { duration: 0.1 },
     ],
-    [count4, data.pop * 100, { duration: 0.1 }],
+    [count4, cityAndWeather.currentItemWeather.pop * 100, { duration: 0.1 }],
     [
       count5,
-      data?.rain === undefined ? 0 : data?.rain["3h"],
+      cityAndWeather.currentItemWeather?.rain === undefined
+        ? 0
+        : cityAndWeather.currentItemWeather?.rain["3h"],
       { duration: 0.1 },
     ],
     [
       count6,
-      Number((data.main.feels_like - 271.15).toFixed()),
+      Number(
+        (cityAndWeather.currentItemWeather.main.feels_like - 271.15).toFixed()
+      ),
       { duration: 0.1 },
     ],
     [
       count7,
-      Number(new Date(weather.city.sunrise * 1000).getHours()),
+      Number(new Date(cityAndWeather.weather.city.sunrise * 1000).getHours()),
       { duration: 0.1 },
     ],
     [
       count8,
-      Number(new Date(weather.city.sunrise * 1000).getMinutes()),
+      Number(new Date(cityAndWeather.weather.city.sunrise * 1000).getMinutes()),
       { duration: 0.1 },
     ],
     [
       count9,
-      Number(new Date(weather.city.sunset * 1000).getHours()),
+      Number(new Date(cityAndWeather.weather.city.sunset * 1000).getHours()),
       { duration: 0.1 },
     ],
     [
       count10,
-      Number(new Date(weather.city.sunset * 1000).getMinutes()),
+      Number(new Date(cityAndWeather.weather.city.sunset * 1000).getMinutes()),
       { duration: 0.1 },
     ],
   ];
 });
-watch(
-  () => data,
-  () => {
-    windDirection.value =
-      data.wind.deg >= 337.5 || data.wind.deg <= 22.5
-        ? arrayWindDirection[0]
-        : arrayWindDirection[Math.ceil((data.wind.deg - 22.5) / 45)];
-  }
-);
+watch(cityAndWeather.currentItemWeather, () => {
+  windDirection.value =
+    cityAndWeather.currentItemWeather.wind.deg >= 337.5 ||
+    cityAndWeather.currentItemWeather.wind.deg <= 22.5
+      ? arrayWindDirection[0]
+      : arrayWindDirection[
+          Math.ceil((cityAndWeather.currentItemWeather.wind.deg - 22.5) / 45)
+        ];
+});
 onMounted(() => {
   controls = animate(arrayAnimateValues.value);
 });
@@ -133,7 +144,6 @@ onUnmounted(() => {
       <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
       <p class="weather-data"><RowValue :value="clouds" /> %</p>
     </div>
-    <!-- <div class="weather-element">2</div> -->
     <motion.div
       class="weather-element"
       :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
@@ -200,18 +210,10 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.motion-pre {
-  font-size: 64px;
-  color: #4ff0b7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 p {
   color: rgb(255, 255, 255);
   font-family: "Roboto", sans-serif;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 33px;
   letter-spacing: 0.36px;
@@ -219,10 +221,10 @@ p {
 }
 
 .weather-data {
-  /* Default / Bold / Title1 */
+  /* Default / Bold / Title1  */
   color: rgb(255, 255, 255);
   font-family: "Roboto", sans-serif;
-  font-size: 28px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 33px;
   letter-spacing: 0.36px;
@@ -230,20 +232,21 @@ p {
 }
 
 .element {
-  width: 50%;
-  height: 50%;
+  width: 40%;
+  height: 40%;
 }
 
 .right-panel {
-  margin-top: 1%;
-  width: 50%;
+  min-height: 870px;
+  min-width: 400px;
+  width: max-content;
+  height: max-content;
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   justify-items: center;
-  align-items: start;
+  align-items: center;
   align-content: space-between;
   justify-content: space-between;
-
   overflow-y: auto;
 }
 
@@ -260,7 +263,7 @@ p {
   transition: background 1s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -275,7 +278,6 @@ p {
 
 .one {
   grid-column: 1/3;
-  width: calc(28vw + 3%);
 }
 
 .right-panel::-webkit-scrollbar {

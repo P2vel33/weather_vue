@@ -77,17 +77,27 @@ const arrayAnimateValues = computed(() => {
   ];
 });
 
+watch(
+  () => cityAndWeather.weather,
+  () => {
+    currentNumberItemWeather.value = 0;
+  }
+);
+
 onMounted(() => {
   controls = animate(arrayAnimateValues.value);
+  // console.log("WORK");
 });
 
 onUpdated(() => {
   controls = animate(arrayAnimateValues.value);
+  // console.log("WORK WORK");
 });
 
 onUnmounted(() => {
   controls?.stop();
 });
+// console.log(temp);
 </script>
 
 <template>
@@ -266,7 +276,7 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  padding-top: 50px;
+  /* padding-top: 50px; */
 }
 
 .temp {

@@ -12,18 +12,22 @@ import getCityByCoordinate from "./hooks/async/getCityByCoordinate";
 import { useCityAndWeather } from "./store/useCityAndWeather";
 import LeftPanel from "./components/LeftPanel.vue";
 import CentralPanel from "./components/CentralPanel.vue";
+import Loading from "./components/UI/Loading.vue";
 
 const cityAndWeather = useCityAndWeather();
-const city = ref("");
 
 async function success(pos) {
   try {
+    cityAndWeather.setLoading();
     const { latitude, longitude } = pos.coords;
-    const response = await getWeatherCity(false, latitude, longitude);
-    const res = await getCityByCoordinate(false, latitude, longitude);
+    const response = await getWeatherCity(true, latitude, longitude);
+    const res = await getCityByCoordinate(true, latitude, longitude);
     cityAndWeather.setWeatherValues(response, res);
   } catch (error) {
+    cityAndWeather.removeLoading();
     console.log(error);
+  } finally {
+    cityAndWeather.removeLoading();
   }
 }
 
@@ -37,10 +41,18 @@ async function error(err) {
   } else {
     console.log("Unknown error");
   }
-  const { latitude, longitude } = await getLocationByIp();
-  const response = await getWeatherCity(false, latitude, longitude);
-  const res = await getCityByCoordinate(false, latitude, longitude);
-  cityAndWeather.setWeatherValues(response, res);
+  try {
+    cityAndWeather.setLoading();
+    const { latitude, longitude } = await getLocationByIp();
+    const response = await getWeatherCity(true, latitude, longitude);
+    const res = await getCityByCoordinate(true, latitude, longitude);
+    cityAndWeather.setWeatherValues(response, res);
+  } catch (error) {
+    console.log(error);
+    cityAndWeather.removeLoading();
+  } finally {
+    cityAndWeather.removeLoading();
+  }
 }
 
 onMounted(() => {
@@ -53,25 +65,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home">
-    <LeftPanel />
-    <motion.div
-      class="center-panel"
-      initial="hidden"
-      animate="show"
-      :variants="animationShift('beforeChildren', 1, 0, -100).container"
-    >
-      <WeatherCity
+  <div class="backs">
+    <Loading v-if="cityAndWeather.isLoading" />
+    <div v-else class="home">
+      <LeftPanel />
+      <motion.div
+        class="center-panel"
         initial="hidden"
         animate="show"
-        :variants="animationShift('beforeChildren', 1, -200, 0).item"
+        :variants="animationShift('beforeChildren', 1, 0, -100).container"
+      >
+        <WeatherCity
+          initial="hidden"
+          animate="show"
+          :variants="animationShift('beforeChildren', 1, -200, 0).item"
+        />
+      </motion.div>
+      <!-- <CentralPanel /> -->
+      <RightPanel
+        :data="cityAndWeather.currentItemWeather"
+        :weather="cityAndWeather.weather"
       />
-    </motion.div>
-    <CentralPanel />
-    <RightPanel
-      :data="cityAndWeather.currentItemWeather"
-      :weather="cityAndWeather.weather"
-    />
+    </div>
   </div>
 </template>
 
@@ -81,69 +96,24 @@ onMounted(() => {
 * {
   margin: 0%;
 }
-.input-city {
-  margin-left: 2%;
-  background: none;
-  border: none;
-  color: rgba(235, 235, 245, 0.6);
 
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 22px;
-  letter-spacing: -0.41px;
-  text-align: left;
-  width: 90%;
-}
-
-.input-city:focus {
-  border: none;
-  background: none;
-  color: white;
-  outline: none;
-}
-
-.search {
-  display: flex;
-  flex-direction: row;
-  border-radius: 10px;
-
-  box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background: linear-gradient(
-    136.55deg,
-    rgba(46, 51, 90, 0.26) 2.552%,
-    rgba(28, 27, 51, 0.26) 93.363%
-  );
-  padding: 1%;
-}
-
-.widget-list-and-header {
-  margin-left: 5%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  gap: 10px;
-  justify-content: center;
-}
-.header-widget-list {
-  /* Default / Bold / LargeTitle */
-  color: rgb(255, 255, 255);
-  font-family: "Roboto", sans-serif;
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 41px;
-  letter-spacing: 0.37px;
-  text-align: center;
-}
 .home {
+  max-width: 2000px;
+  height: min-content;
+  padding-left: 2%;
+  padding-right: 2%;
   padding-bottom: 10%;
+  padding-top: 1%;
   display: flex;
+  flex: none;
+  flex-wrap: nowrap;
   flex-direction: row;
-  justify-content: space-around;
+  align-items: flex-start;
+  justify-content: space-evenly;
   gap: 5%;
+}
 
+.backs {
   box-shadow: inset 0px 1px 0px 0px rgb(255, 255, 255),
     0px 20px 100px 0px rgba(74, 57, 127, 0.7);
   background: radial-gradient(
@@ -151,5 +121,9 @@ onMounted(() => {
     rgba(69, 39, 139, 0.9),
     rgba(46, 51, 90, 0.9) 100%
   );
+  width: auto;
+  min-height: 100vh;
+  /* align-items: center; */
+  /* justify-items: center; */
 }
 </style>

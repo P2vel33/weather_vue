@@ -19,4 +19,4 @@ import WeatherCity from "./WeatherCity.vue";
   </motion.div>
 </template>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

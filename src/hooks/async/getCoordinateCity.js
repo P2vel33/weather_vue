@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import dataCity from "../../data/dataCity";
 
 const api_key = import.meta.env.VITE_API_KEY;

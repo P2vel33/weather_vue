@@ -4,7 +4,6 @@ import dataCity from "../data/dataCity";
 import dataNewWeather from "../data/dataNewWeather";
 
 export const useCityAndWeather = defineStore("cityAndWeather", () => {
-  const isLoading = ref(false);
   const dataCities = ref(dataCity);
   const newDataWeather = ref(dataNewWeather);
   const weather = ref(newDataWeather.value[0]);
@@ -37,15 +36,7 @@ export const useCityAndWeather = defineStore("cityAndWeather", () => {
     addDataCity(dataOfCity);
   };
 
-  const setLoading = () => {
-    isLoading.value = true;
-  };
-
-  const removeLoading = () => {
-    isLoading.value = false;
-  };
   return {
-    isLoading,
     dataCities,
     newDataWeather,
     weather,
@@ -57,7 +48,5 @@ export const useCityAndWeather = defineStore("cityAndWeather", () => {
     setWeather,
     setCityName,
     setWeatherValues,
-    setLoading,
-    removeLoading,
   };
 });

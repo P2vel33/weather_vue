@@ -28,14 +28,19 @@ const dotVariants = {
 
 <style>
 .container {
-  top: 0%;
+  /* top: 0%;
   bottom: 0%;
   left: 0%;
   right: 0%;
-  position: fixed;
+  position: fixed; */
+  width: 100%;
+  height: 100%;
   display: flex;
+  margin: auto;
   justify-content: center;
+  /* justify-items: center; */
   align-items: center;
+  /* align-content: center; */
   gap: 10px;
 }
 

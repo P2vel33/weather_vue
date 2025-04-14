@@ -2,10 +2,8 @@
 import { onMounted, ref } from "vue";
 import WeatherCity from "./components/WeatherCity.vue";
 import RightPanel from "./components/RightPanel.vue";
-import WidgetList from "./components/WidgetList.vue";
 import { motion } from "motion-v";
 import animationShift from "./motion/animationShift";
-import getCoordinateCity from "./hooks/async/getCoordinateCity";
 import getLocationByIp from "./hooks/async/getLocationByIp";
 import getWeatherCity from "./hooks/async/getWeatherCity";
 import getCityByCoordinate from "./hooks/async/getCityByCoordinate";
@@ -13,22 +11,23 @@ import { useCityAndWeather } from "./store/useCityAndWeather";
 import LeftPanel from "./components/LeftPanel.vue";
 import CentralPanel from "./components/CentralPanel.vue";
 import Loading from "./components/UI/Loading.vue";
+import { useLoadingStore } from "./store/useLoadingStore";
 // import Ball from "./components/Ball.vue";
 
 const cityAndWeather = useCityAndWeather();
+const loadingStore = useLoadingStore();
 
 async function success(pos) {
   try {
-    cityAndWeather.setLoading();
+    loadingStore.setLoadingMain();
     const { latitude, longitude } = pos.coords;
     const response = await getWeatherCity(false, latitude, longitude);
     const res = await getCityByCoordinate(false, latitude, longitude);
     cityAndWeather.setWeatherValues(response, res);
   } catch (error) {
-    cityAndWeather.removeLoading();
     console.log(error);
   } finally {
-    cityAndWeather.removeLoading();
+    loadingStore.removeLoadingMain();
   }
 }
 
@@ -43,16 +42,15 @@ async function error(err) {
     console.log("Unknown error");
   }
   try {
-    cityAndWeather.setLoading();
+    loadingStore.setLoadingMain();
     const { latitude, longitude } = await getLocationByIp();
     const response = await getWeatherCity(false, latitude, longitude);
     const res = await getCityByCoordinate(false, latitude, longitude);
     cityAndWeather.setWeatherValues(response, res);
   } catch (error) {
     console.log(error);
-    cityAndWeather.removeLoading();
   } finally {
-    cityAndWeather.removeLoading();
+    loadingStore.removeLoadingMain();
   }
 }
 
@@ -67,23 +65,14 @@ onMounted(() => {
 
 <template>
   <div class="backs">
-    <Loading v-if="cityAndWeather.isLoading" />
+    <Loading v-if="loadingStore.isLoadingMain" />
     <div v-else class="home">
       <LeftPanel />
-      <motion.div
-        class="center-panel"
+      <WeatherCity
         initial="hidden"
         animate="show"
-        :variants="animationShift('beforeChildren', 1, 0, -100).container"
-      >
-        <WeatherCity
-          initial="hidden"
-          animate="show"
-          :variants="animationShift('beforeChildren', 1, -200, 0).item"
-        />
-        <!-- <Ball /> -->
-      </motion.div>
-      <!-- <CentralPanel /> -->
+        :variants="animationShift('beforeChildren', 1, -200, 0).item"
+      />
       <RightPanel
         :data="cityAndWeather.currentItemWeather"
         :weather="cityAndWeather.weather"
@@ -100,7 +89,10 @@ onMounted(() => {
 }
 
 .home {
+  min-width: 1800px;
   max-width: 2000px;
+  min-height: 890px;
+  max-height: 890px;
   height: min-content;
   padding-left: 2%;
   padding-right: 2%;
@@ -125,6 +117,8 @@ onMounted(() => {
   );
   width: auto;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
   /* align-items: center; */
   /* justify-items: center; */
 }

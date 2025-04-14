@@ -101,19 +101,12 @@ onUnmounted(() => {
 // console.log(temp);
 </script>
 
-<template>
-  <motion.div
-    class="back"
-    :variants="animationShift('beforeChildren', 0, -50, -50).container"
+<!--     :variants="animationShift('beforeChildren', 0, -50, -50).container"
     initial="hidden"
-    animate="show"
-  >
-    <motion.div
-      class="content"
-      :variants="animationShift('beforeChildren', 0, -50, -50).container"
-      initial="hidden"
-      animate="show"
-    >
+    animate="show" -->
+<template>
+  <motion.div class="back">
+    <motion.div class="content">
       <p class="city-name">{{ cityAndWeather.weatherCity }}</p>
       <p class="temp"><RowValue :value="temp" />°</p>
       <div class="label2">
@@ -326,9 +319,12 @@ onUnmounted(() => {
   align-items: center;
   text-align: center;
   justify-content: center;
-  border-radius: 50px;
+  /* border-radius: 50px; */
+  min-height: 890px;
+  max-height: 890px;
 }
 .homes {
+  margin-top: 45px;
   width: 392px;
   height: 390px;
   background-image: url("/public/House.svg");

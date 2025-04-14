@@ -5,14 +5,16 @@ import getCoordinateCity from "../hooks/async/getCoordinateCity";
 import WidgetList from "./WidgetList.vue";
 import { useCityAndWeather } from "../store/useCityAndWeather";
 import getWeatherCity from "../hooks/async/getWeatherCity";
+import { useLoadingStore } from "../store/useLoadingStore";
+import Loading from "./UI/Loading.vue";
 const cityAndWeather = useCityAndWeather();
+const loadingStore = useLoadingStore();
 
 const city = ref("");
 
 async function getWeatherBySearch(cityValue) {
   try {
-    console.log(cityValue);
-    cityAndWeather.setLoading();
+    loadingStore.setLoadingWeatherWidgets();
     const { data, latitude, longitude } = await getCoordinateCity(
       false,
       cityValue
@@ -20,11 +22,10 @@ async function getWeatherBySearch(cityValue) {
     const response = await getWeatherCity(false, latitude, longitude);
     cityAndWeather.setWeatherValues(response, data);
   } catch (error) {
-    cityAndWeather.removeLoading();
     console.log(error);
   } finally {
     city.value = "";
-    cityAndWeather.removeLoading();
+    loadingStore.removeLoadingWeatherWidgets();
   }
 }
 </script>
@@ -43,7 +44,8 @@ async function getWeatherBySearch(cityValue) {
         />
       </form>
     </div>
-    <WidgetList />
+    <Loading v-if="loadingStore.isLoadingWeatherWidgets" />
+    <WidgetList v-else />
   </motion.div>
 </template>
 
@@ -63,7 +65,9 @@ async function getWeatherBySearch(cityValue) {
 }
 
 .widget-list-and-header {
-  max-height: 870px;
+  min-width: 352px;
+  min-height: 880px;
+  max-height: 880px;
   display: flex;
   flex-direction: column;
   align-items: center;

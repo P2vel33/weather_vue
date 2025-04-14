@@ -133,78 +133,81 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <motion.div
-    class="right-panel"
-    :variants="animationShift('beforeChildren', 0.1, -50, -50).container"
-    initial="hidden"
-    animate="show"
-  >
-    <div class="weather-element one">
-      <p>Cloudy</p>
-      <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
-      <p class="weather-data"><RowValue :value="clouds" /> %</p>
-    </div>
+  <motion.div class="right-panel-main">
+    <h2 class="weather-parameters-header">Weather parameters</h2>
     <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+      class="right-panel"
+      :variants="animationShift('beforeChildren', 0.1, -50, -50).container"
+      initial="hidden"
+      animate="show"
     >
-      <p>Speed wind</p>
-      <img class="element" src="/public/RightPanel/wind.svg" alt="" />
-      <p class="weather-data">
-        {{ windDirection }} <RowValue :value="speedWind" /> m/s
-      </p>
-    </motion.div>
-    <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
-    >
-      <p>Visiable</p>
-      <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
-      <p class="weather-data">≈ <RowValue :value="visibility" /> metrs</p>
-    </motion.div>
-    <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
-    >
-      <p>Probability of precipitation</p>
-      <img class="element" src="/public/RightPanel/rain.svg" alt="" />
-      <p class="weather-data"><RowValue :value="rainPop" /> %</p>
-    </motion.div>
-    <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
-    >
-      <p>Precipitation volume for 3 hours</p>
-      <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
-      <p class="weather-data"><RowValue :value="precipitation" /> mm</p>
-    </motion.div>
-    <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
-    >
-      <p>Sunrise</p>
-      <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
-      <p class="weather-data">
-        <RowValue :value="sunriseOne" />:<RowValue :value="sunriseTwo" />
-      </p>
-    </motion.div>
-    <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
-    >
-      <p>Sunset</p>
-      <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
-      <p class="weather-data">
-        <RowValue :value="sunsetOne" />:<RowValue :value="sunsetTwo" />
-      </p>
-    </motion.div>
-    <motion.div
-      class="weather-element"
-      :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
-    >
-      <p>Feels like</p>
-      <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
-      <p class="weather-data"><RowValue :value="feelsLike" /> °C</p>
+      <div class="weather-element one">
+        <p>Cloudy</p>
+        <img class="element" src="/public/RightPanel/cloudy.svg" alt="" />
+        <p class="weather-data"><RowValue :value="clouds" /> %</p>
+      </div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+      >
+        <p>Speed wind</p>
+        <img class="element" src="/public/RightPanel/wind.svg" alt="" />
+        <p class="weather-data">
+          {{ windDirection }} <RowValue :value="speedWind" /> m/s
+        </p>
+      </motion.div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
+      >
+        <p>Visiable</p>
+        <img class="element" src="/public/RightPanel/visiable.svg" alt="" />
+        <p class="weather-data">≈ <RowValue :value="visibility" /> metrs</p>
+      </motion.div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+      >
+        <p>Probability of precipitation</p>
+        <img class="element" src="/public/RightPanel/rain.svg" alt="" />
+        <p class="weather-data"><RowValue :value="rainPop" /> %</p>
+      </motion.div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
+      >
+        <p>Precipitation volume for 3 hours</p>
+        <img class="element" src="/public/RightPanel/newosadki.svg" alt="" />
+        <p class="weather-data"><RowValue :value="precipitation" /> mm</p>
+      </motion.div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+      >
+        <p>Sunrise</p>
+        <img class="element" src="/public/RightPanel/sunrise.svg" alt="" />
+        <p class="weather-data">
+          <RowValue :value="sunriseOne" />:<RowValue :value="sunriseTwo" />
+        </p>
+      </motion.div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, -50, -50).item"
+      >
+        <p>Sunset</p>
+        <img class="element" src="/public/RightPanel/sunset.svg" alt="" />
+        <p class="weather-data">
+          <RowValue :value="sunsetOne" />:<RowValue :value="sunsetTwo" />
+        </p>
+      </motion.div>
+      <motion.div
+        class="weather-element"
+        :variants="animationShift('beforeChildren', 0.1, 50, 50).item"
+      >
+        <p>Feels like</p>
+        <img class="element" src="/public/RightPanel/feelsLike.svg" alt="" />
+        <p class="weather-data"><RowValue :value="feelsLike" /> °C</p>
+      </motion.div>
     </motion.div>
   </motion.div>
 </template>
@@ -217,6 +220,21 @@ p {
   font-weight: 700;
   line-height: 33px;
   letter-spacing: 0.36px;
+  text-align: center;
+}
+
+.right-panel-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-parameters-header {
+  color: rgb(255, 255, 255);
+  font-family: "Roboto", sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 41px;
+  letter-spacing: 0.37px;
   text-align: center;
 }
 

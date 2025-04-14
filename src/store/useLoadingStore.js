@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 export const useLoadingStore = defineStore("loadingStore", () => {
   const isLoadingMain = ref(false);
-  const isLoadingWeatherWidgets = ref(true);
+  const isLoadingWeatherWidgets = ref(false);
   const setLoadingMain = () => {
     isLoadingMain.value = true;
   };

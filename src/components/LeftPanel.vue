@@ -44,12 +44,21 @@ async function getWeatherBySearch(cityValue) {
         />
       </form>
     </div>
-    <Loading v-if="loadingStore.isLoadingWeatherWidgets" />
-    <WidgetList v-else />
+    <Loading
+      v-if="loadingStore.isLoadingWeatherWidgets"
+      class="left-panel-loading"
+    />
+    <WidgetList />
   </motion.div>
 </template>
 
 <style scoped>
+.left-panel-loading {
+  /* margin: 10% 0%; */
+  width: 342px;
+  height: 184px;
+}
+
 .search {
   display: flex;
   flex-direction: row;
